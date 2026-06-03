@@ -66,13 +66,23 @@
             </div>
             <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
         </a>
-        <a href="{{ route('sponsors') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);">
+        <a href="{{ route('sponsors') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
             <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,144,10,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--g);">
                 <i class="bi bi-award-fill"></i>
             </div>
             <div style="flex:1;">
                 <div style="font-weight:700;font-size:.9rem;">Sponsors</div>
                 <div style="font-size:.72rem;color:var(--mut);">Our proud partners &amp; supporters</div>
+            </div>
+            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
+        </a>
+        <a href="{{ route('frontend.scoring') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(220,38,38,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--red);">
+                <i class="bi bi-broadcast"></i>
+            </div>
+            <div style="flex:1;">
+                <div style="font-weight:700;font-size:.9rem;">Live Scoring</div>
+                <div style="font-size:.72rem;color:var(--mut);">Score matches live (key required)</div>
             </div>
             <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
         </a>

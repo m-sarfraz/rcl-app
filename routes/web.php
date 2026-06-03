@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\BannedBowlerController;
 use App\Http\Controllers\Admin\CaptainController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\SponsorController;
+use App\Http\Controllers\Frontend\FrontendScoringController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,6 +67,19 @@ Route::post('/poll/{pollId}/vote', [TournamentController::class, 'poll'])->name(
 // Ticker API
 Route::get('/api/ticker', [HomeController::class, 'ticker'])->name('api.ticker');
 Route::get('/api/match/{match}/live', [TournamentController::class, 'liveMatch'])->name('api.match.live');
+
+// Frontend Scoring Console (secret-key protected via session)
+Route::prefix('score')->name('frontend.scoring')->group(function () {
+    Route::get('/',                                         [FrontendScoringController::class, 'index'])->name('');
+    Route::post('/verify',                                  [FrontendScoringController::class, 'verifyKey'])->name('.verify');
+    Route::get('/lock',                                     [FrontendScoringController::class, 'lock'])->name('.lock');
+    Route::get('/{match}',                                  [FrontendScoringController::class, 'console'])->name('.console');
+    Route::post('/{match}/start-innings',                   [FrontendScoringController::class, 'startInnings'])->name('.start-innings');
+    Route::post('/{match}/innings/{innings}/ball',          [FrontendScoringController::class, 'recordBall'])->name('.record-ball');
+    Route::delete('/{match}/innings/{innings}/undo',        [FrontendScoringController::class, 'undoBall'])->name('.undo-ball');
+    Route::post('/{match}/complete',                        [FrontendScoringController::class, 'completeMatch'])->name('.complete');
+    Route::get('/{match}/live-state',                       [FrontendScoringController::class, 'getLiveState'])->name('.live-state');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +180,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::resource('sponsors', SponsorController::class)->except(['show']);
 
     // Site Settings
-    Route::get('settings/meeting',  [SiteSettingController::class, 'meeting'])->name('settings.meeting');
-    Route::post('settings/meeting', [SiteSettingController::class, 'saveMeeting'])->name('settings.meeting.save');
+    Route::get('settings/meeting',     [SiteSettingController::class, 'meeting'])->name('settings.meeting');
+    Route::post('settings/meeting',    [SiteSettingController::class, 'saveMeeting'])->name('settings.meeting.save');
+    Route::get('settings/scoring-key', [SiteSettingController::class, 'scoringKey'])->name('settings.scoring-key');
+    Route::post('settings/scoring-key',[SiteSettingController::class, 'saveScoringKey'])->name('settings.scoring-key.save');
 });

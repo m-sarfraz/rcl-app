@@ -10,14 +10,19 @@
             </div>
             Leaderboards
         </div>
-        <form method="GET">
-            <select name="edition_id" onchange="this.form.submit()"
-                    style="background:var(--s2);border:1px solid var(--bd);color:var(--txt);border-radius:8px;padding:.25rem .5rem;font-size:.72rem;">
-                @foreach($editions as $ed)
-                    <option value="{{ $ed->id }}" {{ $ed->id==$editionId ? 'selected' : '' }}>{{ $ed->name }}</option>
-                @endforeach
-            </select>
-        </form>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+            <button class="btn-share" onclick="shareStats()" style="padding:.3rem .7rem;font-size:.68rem;">
+                <i class="bi bi-share-fill"></i> Share
+            </button>
+            <form method="GET">
+                <select name="edition_id" onchange="this.form.submit()"
+                        style="background:var(--s2);border:1px solid var(--bd);color:var(--txt);border-radius:8px;padding:.25rem .5rem;font-size:.72rem;">
+                    @foreach($editions as $ed)
+                        <option value="{{ $ed->id }}" {{ $ed->id==$editionId ? 'selected' : '' }}>{{ $ed->name }}</option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -137,6 +142,38 @@ $('.stat-tab').on('click', function() {
     $('.stat-panel').hide();
     $('#tab-' + tab).show();
 });
+
+function shareStats() {
+    var activeTab = $('.stat-tab.active').data('tab') || 'batting';
+    var tabLabel  = $('.stat-tab.active').text().trim() || 'Stats';
+    var edLabel   = @json($editions->firstWhere('id', $editionId)?->name ?? 'RCL');
+
+    var rows = '';
+    $('#tab-' + activeTab + ' .leader-row').each(function(i) {
+        if (i >= 8) return false;
+        var rank = $(this).find('.leader-rank').text().trim();
+        var name = $(this).find('.leader-name').text().trim();
+        var team = $(this).find('.leader-sub').text().trim();
+        var vals = $(this).find('.leader-val');
+        var val1 = vals.eq(0).text().trim();
+        var val2 = vals.eq(1).text().trim() || '';
+        var gold = i < 3;
+        rows += '<div style="display:flex;align-items:center;padding:6px 14px;border-bottom:1px solid rgba(27,138,78,.08);font-size:11px;">'
+            + '<div style="width:22px;font-weight:800;color:' + (gold ? '#D4900A' : '#6B8F74') + ';">' + rank + '</div>'
+            + '<div style="flex:1;"><div style="font-weight:700;color:#1A2E20;">' + name + '</div>'
+            + '<div style="font-size:9px;color:#6B8F74;">' + team + '</div></div>'
+            + '<div style="font-weight:900;color:#1B8A4E;font-size:13px;">' + val1 + '</div>'
+            + (val2 ? '<div style="width:36px;text-align:right;color:#6B8F74;font-size:10px;">' + val2 + '</div>' : '')
+            + '</div>';
+    });
+
+    var body = '<div style="padding:10px 0 4px;">'
+        + '<div style="padding:4px 14px 10px;font-size:14px;font-weight:800;color:#1A2E20;border-bottom:2px solid rgba(27,138,78,.15);">'
+        + tabLabel + ' Leaderboard</div>'
+        + rows + '</div>';
+
+    shareRCL(tabLabel + ' Leaderboard', body, edLabel);
+}
 </script>
 @endpush
 @endsection

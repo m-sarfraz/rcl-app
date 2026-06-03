@@ -90,12 +90,54 @@
 @endif
 @endforeach
 
-{{-- Download --}}
-<div class="sec" style="text-align:center;">
+{{-- Download + Share --}}
+<div class="sec" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:.625rem;flex-wrap:wrap;">
     <a href="{{ route('scorecard.print', $match) }}" target="_blank"
        class="pill pill-green" style="padding:.5rem 1.25rem;font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:.375rem;">
-        <i class="bi bi-download"></i> Download Scorecard
+        <i class="bi bi-download"></i> Download
     </a>
+    <button class="btn-share" onclick="shareScorecard()">
+        <i class="bi bi-share-fill"></i> Share Card
+    </button>
 </div>
+
+@push('scripts')
+<script>
+function shareScorecard() {
+    @php
+        $inn1Summary = $inn1 ? ($inn1->battingTeam?->short_code ?? $inn1->battingTeam?->name) . '  ' . $inn1->total_runs . '/' . $inn1->total_wickets . ' (' . floor($inn1->total_balls/6) . '.' . ($inn1->total_balls%6) . ')' : null;
+        $inn2Summary = $inn2 ? ($inn2->battingTeam?->short_code ?? $inn2->battingTeam?->name) . '  ' . $inn2->total_runs . '/' . $inn2->total_wickets . ' (' . floor($inn2->total_balls/6) . '.' . ($inn2->total_balls%6) . ')' : null;
+        $resultText = '';
+        if($match->status === 'completed') {
+            if($match->winner) $resultText = $match->winner->name . ' won by ' . $match->result_margin . ' ' . $match->result_type;
+            elseif($match->result_type === 'tie') $resultText = 'Match Tied';
+        } elseif($match->status === 'live') { $resultText = 'LIVE'; }
+    @endphp
+
+    var matchTitle = @json(($match->homeTeam?->short_code ?? $match->homeTeam?->name ?? '?') . ' vs ' . ($match->awayTeam?->short_code ?? $match->awayTeam?->name ?? '?'));
+    var inn1 = @json($inn1Summary);
+    var inn2 = @json($inn2Summary);
+    var result = @json($resultText);
+    var editionName = @json($match->edition?->name ?? 'RCL');
+    var matchNum = @json('Match #' . $match->match_number);
+
+    var p = function(c,v){ return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 18px;border-bottom:1px solid rgba(27,138,78,.1);font-size:12px;">' +
+        '<span style="color:#6B8F74;font-weight:600;">' + c + '</span>' +
+        '<span style="font-weight:800;color:#1A2E20;">' + v + '</span></div>'; };
+
+    var body = '<div style="padding:14px 0 4px;">';
+    body += '<div style="text-align:center;padding:4px 18px 12px;">';
+    body += '<div style="font-size:20px;font-weight:900;color:#1A2E20;">' + matchTitle + '</div>';
+    body += '<div style="font-size:10px;color:#6B8F74;letter-spacing:.06em;margin-top:3px;">' + editionName + ' · ' + matchNum + '</div>';
+    body += '</div>';
+    if(inn1) body += p('1st Innings', inn1);
+    if(inn2) body += p('2nd Innings', inn2);
+    if(result) body += '<div style="margin:10px 18px;padding:10px;background:' + (result==='LIVE' ? 'rgba(212,0,0,.08)' : 'rgba(27,138,78,.08)') + ';border-radius:10px;text-align:center;font-weight:800;font-size:13px;color:' + (result==='LIVE' ? '#DC2626' : '#1B8A4E') + ';">' + result + '</div>';
+    body += '</div>';
+
+    shareRCL(matchTitle + ' Scorecard', body, editionName);
+}
+</script>
+@endpush
 
 @endsection

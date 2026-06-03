@@ -32,6 +32,9 @@
         Playing for <span style="color:var(--txt);font-weight:600;">{{ $player->teams->last()->name }}</span>
     </div>
     @endif
+    <button class="btn-share" onclick="sharePlayer()" style="margin-top:.875rem;">
+        <i class="bi bi-share-fill"></i> Share Profile
+    </button>
 </div>
 
 {{-- Quick Stats --}}
@@ -159,4 +162,53 @@
 @endif
 
 <div style="height:1rem;"></div>
+
+@push('scripts')
+<script>
+function sharePlayer() {
+    @php
+        $careerRuns  = $player->editionStats->sum('total_runs');
+        $careerWkts  = $player->editionStats->sum('total_wickets');
+        $careerFours = $player->editionStats->sum('total_fours');
+        $careerSixes = $player->editionStats->sum('total_sixes');
+        $mvps        = $player->editionStats->sum('mvp_count');
+        $team        = $player->teams->last()?->name ?? 'RCL';
+        $role        = ucwords(str_replace('_', ' ', $player->role));
+    @endphp
+
+    var name   = @json($player->name);
+    var role   = @json($role);
+    var team   = @json($team);
+    var runs   = @json($careerRuns);
+    var wkts   = @json($careerWkts);
+    var fours  = @json($careerFours);
+    var sixes  = @json($careerSixes);
+    var mvps   = @json($mvps);
+    var jersey = @json($player->jersey_number ? '#' . $player->jersey_number : '');
+
+    var stat = function(lbl, val, col) {
+        col = col || '#1A2E20';
+        return '<div style="flex:1;text-align:center;padding:8px 4px;">'
+            + '<div style="font-size:18px;font-weight:900;color:' + col + ';">' + val + '</div>'
+            + '<div style="font-size:9px;color:#6B8F74;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;">' + lbl + '</div>'
+            + '</div>';
+    };
+
+    var body = '<div style="padding:14px 18px 10px;text-align:center;background:linear-gradient(180deg,rgba(27,138,78,.08) 0%,transparent 100%);border-bottom:1px solid rgba(27,138,78,.12);">'
+        + '<div style="font-size:22px;font-weight:900;color:#1A2E20;">' + name + (jersey ? ' <span style=\"color:#D4900A;font-size:14px;\">' + jersey + '</span>' : '') + '</div>'
+        + '<div style="font-size:11px;color:#6B8F74;margin-top:3px;">' + role + ' · ' + team + '</div>'
+        + '</div>'
+        + '<div style="display:flex;padding:8px 10px;border-bottom:1px solid rgba(27,138,78,.1);">'
+        + stat('Career Runs', runs, '#1B8A4E')
+        + stat('Wickets', wkts, '#D4900A')
+        + stat('4s', fours)
+        + stat('6s', sixes)
+        + stat('MVP', mvps, '#D4900A')
+        + '</div>';
+
+    shareRCL(name + ' — Player Profile', body, 'Player Profile');
+}
+</script>
+@endpush
+
 @endsection

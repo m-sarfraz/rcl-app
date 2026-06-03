@@ -219,8 +219,11 @@
         </a>
 
         <div class="nav-section-label mt-2">Settings</div>
-        <a href="{{ route('admin.settings.meeting') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.settings.meeting') }}" class="nav-link {{ request()->routeIs('admin.settings.meeting*') ? 'active' : '' }}">
             <i class="bi bi-megaphone-fill"></i> Meeting Notice
+        </a>
+        <a href="{{ route('admin.settings.scoring-key') }}" class="nav-link {{ request()->routeIs('admin.settings.scoring-key*') ? 'active' : '' }}">
+            <i class="bi bi-broadcast"></i> Scoring Key
         </a>
 
         <div class="nav-section-label mt-2">System</div>

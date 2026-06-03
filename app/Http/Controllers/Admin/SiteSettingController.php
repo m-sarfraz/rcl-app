@@ -20,4 +20,19 @@ class SiteSettingController extends Controller
         SiteSetting::set('meeting_content', $request->input('content', ''));
         return back()->with('success', 'Meeting notice updated successfully.');
     }
+
+    public function scoringKey()
+    {
+        $key = SiteSetting::get('scoring_secret_key', '');
+        return view('admin.settings.scoring-key', compact('key'));
+    }
+
+    public function saveScoringKey(Request $request)
+    {
+        $request->validate([
+            'key' => 'required|string|min:6|max:64',
+        ]);
+        SiteSetting::set('scoring_secret_key', $request->input('key'));
+        return back()->with('success', 'Scoring secret key updated.');
+    }
 }
