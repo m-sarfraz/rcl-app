@@ -1,0 +1,45 @@
+<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="G" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B8A4E"/>
+      <stop offset="1" stop-color="#D4900A"/>
+    </linearGradient>
+    <radialGradient id="S" cx="35%" cy="25%" r="60%" fx="35%" fy="25%">
+      <stop stop-color="white" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="C">
+      <circle cx="28" cy="28" r="28"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="28" cy="28" r="28" fill="url(#G)"/>
+  <!-- Shine overlay -->
+  <circle cx="28" cy="28" r="28" fill="url(#S)"/>
+  <!-- Subtle inner ring -->
+  <circle cx="28" cy="28" r="25.5" stroke="white" stroke-opacity="0.14" stroke-width="0.8" fill="none"/>
+
+  <g clip-path="url(#C)">
+    <!-- Head -->
+    <circle cx="30" cy="12" r="7.5" fill="white" fill-opacity="0.93"/>
+    <!-- Helmet peak / visor -->
+    <rect x="22" y="15" width="14" height="2.5" rx="1.25" fill="white" fill-opacity="0.48"/>
+
+    <!-- Body / torso (batting stance lean) -->
+    <path d="M21 22 C23 19 35 20 37 23 L35 37 Q27 40 19 36 Z" fill="white" fill-opacity="0.90"/>
+
+    <!-- Front arm extended to bat handle -->
+    <line x1="21" y1="26" x2="10" y2="23" stroke="white" stroke-opacity="0.90" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- Bat handle -->
+    <line x1="8" y1="16" x2="11" y2="24" stroke="white" stroke-opacity="0.90" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Bat blade -->
+    <path d="M5 15 L10 14 L14 34 L9 35 Z" fill="white" fill-opacity="0.80"/>
+
+    <!-- Front leg -->
+    <line x1="21" y1="37" x2="17" y2="54" stroke="white" stroke-opacity="0.90" stroke-width="5.5" stroke-linecap="round"/>
+    <!-- Back leg -->
+    <line x1="34" y1="37" x2="38" y2="54" stroke="white" stroke-opacity="0.78" stroke-width="5.5" stroke-linecap="round"/>
+  </g>
+</svg>
