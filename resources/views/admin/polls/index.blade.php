@@ -14,7 +14,7 @@
                 <tr>
                     <td style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;">{{ $poll->question }}</td>
                     <td>{{ $poll->edition?->name }}</td>
-                    <td>{{ $poll->options?->sum('votes') ?? 0 }}</td>
+                    <td>{{ $poll->options->sum('votes_count') }}</td>
                     <td><span class="badge-rcl {{ $poll->is_active?'badge-paid':'badge-unpaid' }}">{{ $poll->is_active?'Active':'Inactive' }}</span></td>
                     <td style="font-size:.8rem;color:var(--rcl-muted);">{{ $poll->ends_at?->format('d M Y') ?? '∞' }}</td>
                     <td class="d-flex gap-1">

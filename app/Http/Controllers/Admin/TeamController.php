@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CricketMatch;
+use App\Models\Edition;
+use App\Models\PlayerEditionTeam;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +46,30 @@ class TeamController extends Controller
         Team::create($data);
 
         return redirect()->route('admin.teams.index')->with('success', 'Team created.');
+    }
+
+    /** Club detail: squad for the current edition plus the season record. */
+    public function show(Team $team)
+    {
+        $team->loadCount('players');
+
+        $editionId = Edition::where('is_current', true)->value('id');
+
+        $squad = PlayerEditionTeam::where('team_id', $team->id)
+            ->when($editionId, fn ($q) => $q->where('edition_id', $editionId))
+            ->with('player')
+            ->get()
+            ->pluck('player')
+            ->filter()
+            ->sortBy('name');
+
+        $matches = CricketMatch::with(['homeTeam', 'awayTeam', 'winner', 'edition'])
+            ->where(fn ($q) => $q->where('home_team_id', $team->id)->orWhere('away_team_id', $team->id))
+            ->orderByDesc('scheduled_at')
+            ->limit(30)
+            ->get();
+
+        return view('admin.teams.show', compact('team', 'squad', 'matches', 'editionId'));
     }
 
     public function edit(Team $team)

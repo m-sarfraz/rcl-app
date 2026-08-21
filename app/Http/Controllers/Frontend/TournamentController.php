@@ -62,15 +62,74 @@ class TournamentController extends Controller
         $inn1 = $match->innings->firstWhere('innings_number', 1);
         $inn2 = $match->innings->firstWhere('innings_number', 2);
 
-        return view('frontend.scorecard', compact('match','inn1','inn2'));
+        // Drives the Open Graph tags, so a shared link previews the live score.
+        $scoreboard = app(\App\Services\ScoreboardService::class)->snapshot($match);
+
+        return view('frontend.scorecard', compact('match','inn1','inn2','scoreboard'));
     }
 
+    /**
+     * Cast a poll vote.
+     *
+     * `poll_options` has no counter column — votes are rows in `poll_votes`,
+     * which also carries the `ip_address` / `session_token` columns the ballot
+     * needs to stop the same visitor voting in a loop.
+     */
     public function poll(Request $request, int $pollId): JsonResponse
     {
-        $option = \App\Models\PollOption::findOrFail($request->option_id);
-        if ($option->poll_id !== $pollId) abort(422);
+        $request->validate(['option_id' => 'required|integer|exists:poll_options,id']);
 
-        $option->increment('votes');
-        return response()->json(['total' => $option->poll->options->sum('votes'), 'option_votes' => $option->votes]);
+        $option = \App\Models\PollOption::findOrFail($request->integer('option_id'));
+
+        if ((int) $option->poll_id !== $pollId) {
+            return response()->json(['error' => 'That option does not belong to this poll.'], 422);
+        }
+
+        $poll = $option->poll;
+
+        if (! $poll || ! $poll->is_active || ($poll->ends_at && $poll->ends_at->isPast())) {
+            return response()->json(['error' => 'This poll is closed.'], 422);
+        }
+
+        $sessionToken = $request->session()->getId();
+
+        $already = \App\Models\PollVote::where('poll_id', $pollId)
+            ->where(fn ($q) => $q->where('session_token', $sessionToken)->orWhere('ip_address', $request->ip()))
+            ->first();
+
+        if ($already) {
+            return response()->json([
+                'error'           => 'You have already voted in this poll.',
+                'voted_option_id' => $already->poll_option_id,
+                'counts'          => $this->pollCounts($pollId),
+            ], 409);
+        }
+
+        \App\Models\PollVote::create([
+            'poll_id'        => $pollId,
+            'poll_option_id' => $option->id,
+            'user_id'        => auth()->id(),
+            'ip_address'     => $request->ip(),
+            'session_token'  => $sessionToken,
+        ]);
+
+        $counts = $this->pollCounts($pollId);
+
+        return response()->json([
+            'total'        => array_sum($counts),
+            'option_votes' => $counts[$option->id] ?? 0,
+            'counts'       => $counts,
+        ]);
+    }
+
+    /** @return array<int, int> option id ⇒ vote count */
+    private function pollCounts(int $pollId): array
+    {
+        return \App\Models\PollVote::where('poll_id', $pollId)
+            ->selectRaw('poll_option_id, COUNT(*) as total')
+            ->groupBy('poll_option_id')
+            ->pluck('total', 'poll_option_id')
+            ->map(fn ($v) => (int) $v)
+            ->all();
     }
 }

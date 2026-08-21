@@ -14,7 +14,9 @@ class PlayerEditionStat extends Model
         'total_fours', 'total_sixes', 'hat_trick_sixes_count', 'five_sixes_in_over_count',
         'innings_bowled', 'overs_bowled', 'total_wickets', 'total_maidens',
         'bowling_average', 'bowling_economy', 'hat_trick_wickets_count', 'five_wicket_hauls',
-        'total_catches', 'total_run_outs', 'total_stumpings', 'mvp_count',
+        'total_catches', 'total_run_outs', 'total_stumpings', 'mvp_count', 'mvp_points',
+        'balls_faced', 'not_outs', 'runs_conceded', 'balls_bowled',
+        'best_bowling_wickets', 'best_bowling_runs',
     ];
 
     public function player(): BelongsTo

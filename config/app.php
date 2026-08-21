@@ -65,6 +65,20 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Access Token
+    |--------------------------------------------------------------------------
+    |
+    | The secret path segment that reveals the admin login: /admin/auth/{token}.
+    | It must live in config, not be read via env() at call time — once
+    | `config:cache` runs in production env() returns null and any hardcoded
+    | fallback becomes the real secret.
+    |
+    */
+
+    'admin_access_token' => env('ADMIN_ACCESS_TOKEN'),
+
     'timezone' => 'UTC',
 
     /*

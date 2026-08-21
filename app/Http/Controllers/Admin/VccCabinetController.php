@@ -42,6 +42,11 @@ class VccCabinetController extends Controller
         return redirect()->route('admin.vcc.index')->with('success', 'Cabinet member added.');
     }
 
+    public function show(VccCabinet $vcc)
+    {
+        return view('admin.vcc.show', compact('vcc'));
+    }
+
     public function edit(VccCabinet $vcc)
     {
         return view('admin.vcc.edit', compact('vcc'));

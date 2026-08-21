@@ -39,24 +39,37 @@ class CalculationEngineService
         return round($runs / $decimalOvers, 2);
     }
 
+    /**
+     * Net run rate for a set of aggregated innings.
+     *
+     * When a side is bowled out it is charged the full allotted quota rather
+     * than the overs it actually survived — otherwise a cheap collapse would
+     * flatter the rate. Pass `$wasBowledOut`/`$opponentBowledOut` to apply it.
+     */
     public function calculateNRR(
         int $runsScored,
         int $ballsFaced,
-        int $runsConced,
+        int $runsConceded,
         int $ballsBowled,
-        int $oversPerSide = 10
+        int $oversPerSide = 10,
+        bool $wasBowledOut = false,
+        bool $opponentBowledOut = false
     ): float {
-        $oversForBalls = $this->ballsToDecimalOvers($ballsFaced);
-        $oversAgainstBalls = $this->ballsToDecimalOvers($ballsBowled);
+        $quota = $this->ballsToDecimalOvers($oversPerSide * 6);
 
-        // If team was bowled out, count full allotted overs
-        $oversFor = max($oversForBalls, 0.01);
-        $oversAgainst = max($oversAgainstBalls, 0.01);
+        $oversFor = $wasBowledOut
+            ? max($this->ballsToDecimalOvers($ballsFaced), $quota)
+            : $this->ballsToDecimalOvers($ballsFaced);
 
-        $rrFor = round($runsScored / $oversFor, 4);
-        $rrAgainst = round($runsConced / $oversAgainst, 4);
+        $oversAgainst = $opponentBowledOut
+            ? max($this->ballsToDecimalOvers($ballsBowled), $quota)
+            : $this->ballsToDecimalOvers($ballsBowled);
 
-        return round($rrFor - $rrAgainst, 2);
+        if ($oversFor <= 0 || $oversAgainst <= 0) {
+            return 0.00;
+        }
+
+        return round(($runsScored / $oversFor) - ($runsConceded / $oversAgainst), 2);
     }
 
     public function formatOvers(int $totalBalls): string

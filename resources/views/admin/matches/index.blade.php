@@ -36,8 +36,12 @@
                     <td><span class="badge-rcl badge-{{ $m->status==='live'?'live':($m->status==='completed'?'completed':'upcoming') }}">{{ ucfirst($m->status) }}</span></td>
                     <td class="d-flex gap-1">
                         @if(in_array($m->status,['upcoming','live']))
-                        <a href="{{ route('admin.scoring.console',$m) }}" class="btn btn-rcl-primary" style="font-size:.72rem;padding:.25rem .6rem;"><i class="bi bi-broadcast"></i> Score</a>
+                        {{-- Scoring is done in the RCL mobile app; the panel is read-only for matches in play --}}
+                        <span class="badge-rcl badge-upcoming" style="font-size:.68rem;" title="Score this match from the RCL mobile app">
+                            <i class="bi bi-phone"></i> App scoring
+                        </span>
                         @endif
+                        <a href="{{ route('admin.matches.show',$m) }}" class="btn-rcl-secondary btn" style="font-size:.72rem;padding:.25rem .6rem;">View</a>
                         <a href="{{ route('admin.matches.edit',$m) }}" class="btn-rcl-secondary btn" style="font-size:.72rem;padding:.25rem .6rem;">Edit</a>
                         @if($m->status==='completed')
                         <a href="{{ route('admin.scorecard.show',$m) }}" class="btn-rcl-secondary btn" style="font-size:.72rem;padding:.25rem .6rem;">Card</a>

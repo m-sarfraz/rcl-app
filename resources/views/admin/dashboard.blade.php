@@ -77,7 +77,10 @@
                             <div style="font-size:.72rem;color:var(--rcl-muted);">{{ floor($inn->total_balls/6) }}.{{ $inn->total_balls%6 }} ov</div>
                         @endif
                     </div>
-                    <a href="{{ route('admin.scoring.console', $m) }}" class="btn-rcl-primary btn" style="font-size:.75rem;padding:.35rem .75rem;">Score</a>
+                    {{-- Scoring is mobile-only; the admin panel links to the read-only card --}}
+                    <a href="{{ route('scorecard', $m) }}" target="_blank" class="btn-rcl-secondary btn" style="font-size:.75rem;padding:.35rem .75rem;">
+                        <i class="bi bi-eye"></i> Watch
+                    </a>
                 </div>
                 @empty
                 <div style="padding:2rem;text-align:center;color:var(--rcl-muted);font-size:.875rem;">No live matches</div>

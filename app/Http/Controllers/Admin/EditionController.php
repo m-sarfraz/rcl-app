@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Edition;
 use App\Models\Team;
+use App\Services\MatchStatisticsService;
+use App\Services\PointsTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -57,6 +59,26 @@ class EditionController extends Controller
         }
 
         return redirect()->route('admin.editions.index')->with('success', 'Edition created successfully.');
+    }
+
+    /**
+     * Edition detail. `Route::resource` has always registered this URL; until
+     * now the method did not exist, so /admin/editions/{id} answered with a 500.
+     */
+    public function show(Edition $edition, PointsTableService $pointsTable, MatchStatisticsService $stats)
+    {
+        $edition->load('teams')->loadCount(['teams', 'matches']);
+
+        $matches = $edition->matches()
+            ->with(['homeTeam', 'awayTeam', 'winner'])
+            ->orderBy('scheduled_at')
+            ->orderByRaw('CAST(match_number AS UNSIGNED)')
+            ->get();
+
+        $table        = $pointsTable->generate($edition->id);
+        $leaderboards = $stats->leaderboards($edition->id, 5);
+
+        return view('admin.editions.show', compact('edition', 'matches', 'table', 'leaderboards'));
     }
 
     public function edit(Edition $edition)

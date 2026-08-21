@@ -12,7 +12,12 @@ class PollController extends Controller
 {
     public function index()
     {
-        $polls = Poll::with('edition')->latest()->paginate(15);
+        // Votes are rows in `poll_votes`, not a counter column on the option,
+        // so the total has to be counted rather than summed off the model.
+        $polls = Poll::with(['edition', 'options' => fn ($q) => $q->withCount('votes')])
+            ->latest()
+            ->paginate(15);
+
         return view('admin.polls.index', compact('polls'));
     }
 

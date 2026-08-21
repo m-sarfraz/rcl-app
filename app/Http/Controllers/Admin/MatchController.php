@@ -52,6 +52,15 @@ class MatchController extends Controller
         return redirect()->route('admin.matches.index')->with('success', 'Match scheduled.');
     }
 
+    /**
+     * A match detail page already exists as the scorecard; sending `show` there
+     * closes the 500 without maintaining two near-identical templates.
+     */
+    public function show(CricketMatch $match)
+    {
+        return redirect()->route('admin.scorecard.show', $match);
+    }
+
     public function edit(CricketMatch $match)
     {
         $editions  = Edition::orderByDesc('edition_number')->get();

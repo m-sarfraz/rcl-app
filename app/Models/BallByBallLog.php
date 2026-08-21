@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BallByBallLog extends Model
 {
     protected $fillable = [
-        'innings_id', 'match_id', 'bowler_id', 'batsman_id', 'non_striker_id',
-        'over_number', 'ball_number', 'runs_scored', 'is_wicket', 'wicket_type',
+        'client_uuid', 'innings_id', 'match_id', 'bowler_id', 'batsman_id', 'non_striker_id',
+        'over_number', 'ball_number', 'runs_scored', 'is_wicket', 'wicket_type', 'out_player_id',
         'fielder_id', 'is_wide', 'is_no_ball', 'is_bye', 'is_leg_bye', 'is_penalty',
         'extra_runs', 'is_four', 'is_six', 'batting_team_score_after',
         'batting_team_wickets_after', 'commentary',
@@ -54,6 +54,12 @@ class BallByBallLog extends Model
     public function fielder(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'fielder_id');
+    }
+
+    /** Who actually got out — on a run-out this is often the non-striker. */
+    public function outPlayer(): BelongsTo
+    {
+        return $this->belongsTo(Player::class, 'out_player_id');
     }
 
     public function isLegalDelivery(): bool

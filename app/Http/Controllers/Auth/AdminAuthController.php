@@ -8,10 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
+    /**
+     * Fails closed: with no ADMIN_ACCESS_TOKEN configured there is no admin URL
+     * at all, rather than a literal committed to the repository standing in for
+     * the secret.
+     */
     private function validToken(string $token): bool
     {
-        $expected = config('app.admin_access_token', env('ADMIN_ACCESS_TOKEN', 'rcl-vcc-admin-2025'));
-        return is_string($expected) && hash_equals($expected, $token);
+        $expected = config('app.admin_access_token');
+
+        return is_string($expected) && $expected !== '' && hash_equals($expected, $token);
     }
 
     public function showLogin(string $hash)

@@ -19,10 +19,12 @@ class CricketMatch extends Model
         'toss_decision', 'winner_id', 'result_type', 'result_margin',
         'result_description', 'umpire1_id', 'umpire2_id', 'scorer_id',
         'man_of_match_player_id', 'is_super_over', 'notes',
+        'finalized_at', 'finalized_by',
     ];
 
     protected $casts = [
-        'scheduled_at' => 'datetime',
+        'scheduled_at'  => 'datetime',
+        'finalized_at'  => 'datetime',
         'is_super_over' => 'boolean',
     ];
 
@@ -84,6 +86,21 @@ class CricketMatch extends Model
     public function bowlingScorecards(): HasMany
     {
         return $this->hasMany(BowlingScorecard::class, 'match_id');
+    }
+
+    public function squads(): HasMany
+    {
+        return $this->hasMany(MatchSquad::class, 'match_id');
+    }
+
+    public function fieldingScorecards(): HasMany
+    {
+        return $this->hasMany(FieldingScorecard::class, 'match_id');
+    }
+
+    public function manOfMatch(): BelongsTo
+    {
+        return $this->belongsTo(Player::class, 'man_of_match_player_id');
     }
 
     public function scopeLive($query)

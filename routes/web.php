@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\EmbedController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EditionController;
@@ -12,7 +13,6 @@ use App\Http\Controllers\Admin\PlayerController;
 use App\Http\Controllers\Admin\PollController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ScorecardController;
-use App\Http\Controllers\Admin\ScoringConsoleController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\VccCabinetController;
 use App\Http\Controllers\Admin\BannerController;
@@ -26,7 +26,6 @@ use App\Http\Controllers\Admin\BannedBowlerController;
 use App\Http\Controllers\Admin\CaptainController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\SponsorController;
-use App\Http\Controllers\Frontend\FrontendScoringController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,18 +67,32 @@ Route::post('/poll/{pollId}/vote', [TournamentController::class, 'poll'])->name(
 Route::get('/api/ticker', [HomeController::class, 'ticker'])->name('api.ticker');
 Route::get('/api/match/{match}/live', [TournamentController::class, 'liveMatch'])->name('api.match.live');
 
-// Frontend Scoring Console (secret-key protected via session)
-Route::prefix('score')->name('frontend.scoring')->group(function () {
-    Route::get('/',                                         [FrontendScoringController::class, 'index'])->name('');
-    Route::post('/verify',                                  [FrontendScoringController::class, 'verifyKey'])->name('.verify');
-    Route::get('/lock',                                     [FrontendScoringController::class, 'lock'])->name('.lock');
-    Route::get('/{match}',                                  [FrontendScoringController::class, 'console'])->name('.console');
-    Route::post('/{match}/start-innings',                   [FrontendScoringController::class, 'startInnings'])->name('.start-innings');
-    Route::post('/{match}/innings/{innings}/ball',          [FrontendScoringController::class, 'recordBall'])->name('.record-ball');
-    Route::delete('/{match}/innings/{innings}/undo',        [FrontendScoringController::class, 'undoBall'])->name('.undo-ball');
-    Route::post('/{match}/complete',                        [FrontendScoringController::class, 'completeMatch'])->name('.complete');
-    Route::get('/{match}/live-state',                       [FrontendScoringController::class, 'getLiveState'])->name('.live-state');
+/*
+|--------------------------------------------------------------------------
+| Embeddable scoreboards
+|--------------------------------------------------------------------------
+| Public, read-only, and designed to be framed: a card for a web page, a
+| transparent lower-third for a PRISM Live Studio / OBS browser source so a
+| Facebook Live stream carries the score, and a PNG for link previews.
+*/
+Route::prefix('embed')->name('embed.')->group(function () {
+    Route::get('oembed',                   [EmbedController::class, 'oembed'])->name('oembed');
+    Route::get('match/{match}',            [EmbedController::class, 'widget'])->name('widget');
+    Route::get('match/{match}/state.json', [EmbedController::class, 'state'])->name('state');
+    Route::get('match/{match}/image.png',  [EmbedController::class, 'image'])->name('image');
 });
+Route::get('/share/{match}', [EmbedController::class, 'builder'])->name('share');
+
+/*
+|--------------------------------------------------------------------------
+| Live scoring lives in the React Native app only
+|--------------------------------------------------------------------------
+| The web and admin scoring consoles were retired: scoring authority now sits
+| exclusively with the mobile app, which talks to /api/v1/scoring/*. Anyone
+| landing on the old URL gets pointed at the read-only live view.
+*/
+Route::get('/score', fn () => redirect()->route('schedule')
+    ->with('error', 'Live scoring has moved to the RCL mobile app.'))->name('score.moved');
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +109,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
 */
 Route::prefix('admin/auth')->name('admin.')->group(function () {
     Route::get('{hash}',   [AdminAuthController::class, 'showLogin'])->name('login');
-    Route::post('{hash}',  [AdminAuthController::class, 'login'])->name('login.submit');
+    Route::post('{hash}',  [AdminAuthController::class, 'login'])->middleware('throttle:login')->name('login.submit');
     Route::post('logout',  [AdminAuthController::class, 'logout'])->name('logout');
 });
 
@@ -121,13 +134,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     // Matches
     Route::resource('matches', MatchController::class);
     Route::patch('matches/{match}/result', [MatchController::class, 'result'])->name('matches.result');
-
-    // Live Scoring Console
-    Route::get('matches/{match}/score',  [ScoringConsoleController::class, 'console'])->name('scoring.console');
-    Route::post('matches/{match}/start-innings',                [ScoringConsoleController::class, 'startInnings'])->name('scoring.start-innings');
-    Route::post('matches/{match}/innings/{innings}/ball',       [ScoringConsoleController::class, 'recordBall'])->name('scoring.record-ball');
-    Route::post('matches/{match}/complete',                     [ScoringConsoleController::class, 'completeMatch'])->name('scoring.complete');
-    Route::get('matches/{match}/live-state',                    [ScoringConsoleController::class, 'getLiveState'])->name('scoring.live-state');
 
     // Scorecard
     Route::get('scorecard/{match}', [ScorecardController::class, 'show'])->name('scorecard.show');

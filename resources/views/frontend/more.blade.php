@@ -3,116 +3,64 @@
 
 @section('content')
 <div class="sec">
-    <div class="grad" style="font-weight:900;font-size:1rem;margin-bottom:1rem;">Explore RCL</div>
+    <div style="font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:1rem;">Explore RCL</div>
 
-    <div class="card" style="margin-bottom:.875rem;">
-        <a href="{{ route('vcc') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(179,136,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--purple);">
-                <i class="bi bi-person-badge-fill"></i>
+    <div class="card" style="overflow:hidden;margin-bottom:.75rem;">
+        @php
+        $links = [
+            ['route'=>'vcc',           'icon'=>'bi-person-badge-fill', 'color'=>'rgba(206,147,216,.12)', 'ic'=>'var(--pur)', 'title'=>'VCC Cabinet',     'sub'=>'Village Cricket Council leadership'],
+            ['route'=>'stats',         'icon'=>'bi-bar-chart-fill',    'color'=>'rgba(64,196,255,.12)',  'ic'=>'var(--blue)','title'=>'Statistics',       'sub'=>'Batting, bowling & fielding records'],
+            ['route'=>'tournaments.index','icon'=>'bi-trophy-fill',    'color'=>'rgba(255,202,40,.12)', 'ic'=>'var(--g)',   'title'=>'All Editions',     'sub'=>'Browse all tournament editions'],
+            ['route'=>'captains',      'icon'=>'bi-star-fill',         'color'=>'rgba(255,202,40,.12)', 'ic'=>'var(--g)',   'title'=>'Team Captains',    'sub'=>'Captains & vice-captains by team'],
+            ['route'=>'banned-bowlers','icon'=>'bi-slash-circle-fill', 'color'=>'rgba(255,82,82,.12)',  'ic'=>'var(--red)', 'title'=>'Banned Bowlers',   'sub'=>'Bowling action bans & restrictions'],
+            ['route'=>'team-fines',    'icon'=>'bi-cash-stack',        'color'=>'rgba(255,202,40,.12)', 'ic'=>'var(--g)',   'title'=>'Team Fines',       'sub'=>'Disciplinary fines by team'],
+            ['route'=>'sponsors',      'icon'=>'bi-award-fill',        'color'=>'rgba(255,202,40,.12)', 'ic'=>'var(--g)',   'title'=>'Sponsors',         'sub'=>'Our proud partners & supporters'],
+        ];
+        @endphp
+
+        @foreach($links as $i => $link)
+        <a href="{{ route($link['route']) }}"
+           style="display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;text-decoration:none;color:var(--txt);
+                  {{ !$loop->last ? 'border-bottom:1px solid rgba(255,255,255,.05);' : '' }}
+                  transition:background .15s;"
+           onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background=''">
+            <div style="width:40px;height:40px;border-radius:12px;background:{{ $link['color'] }};display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">
+                <i class="bi {{ $link['icon'] }}" style="color:{{ $link['ic'] }};"></i>
             </div>
             <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">VCC Cabinet</div>
-                <div style="font-size:.72rem;color:var(--mut);">Village Cricket Council leadership</div>
+                <div style="font-weight:700;font-size:.9rem;color:var(--txt);">{{ $link['title'] }}</div>
+                <div style="font-size:.7rem;color:var(--mut);margin-top:.08rem;">{{ $link['sub'] }}</div>
             </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
+            <i class="bi bi-chevron-right" style="color:var(--mut);font-size:.85rem;"></i>
         </a>
-        <a href="{{ route('stats') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(64,196,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--blue);">
-                <i class="bi bi-bar-chart-fill"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Statistics</div>
-                <div style="font-size:.72rem;color:var(--mut);">Batting, bowling &amp; fielding records</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
-        <a href="{{ route('tournaments.index') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,214,0,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--g);">
-                <i class="bi bi-trophy-fill"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">All Editions</div>
-                <div style="font-size:.72rem;color:var(--mut);">Browse all tournament editions</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
-        <a href="{{ route('captains') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,144,10,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--g);">
-                <i class="bi bi-star-fill"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Team Captains</div>
-                <div style="font-size:.72rem;color:var(--mut);">Captains &amp; vice-captains by team</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
-        <a href="{{ route('banned-bowlers') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(220,38,38,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--red);">
-                <i class="bi bi-slash-circle-fill"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Banned Bowlers</div>
-                <div style="font-size:.72rem;color:var(--mut);">Bowling action bans &amp; restrictions</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
-        <a href="{{ route('team-fines') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,144,10,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--g);">
-                <i class="bi bi-cash-stack"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Team Fines</div>
-                <div style="font-size:.72rem;color:var(--mut);">Disciplinary fines by team</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
-        <a href="{{ route('sponsors') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);border-bottom:1px solid var(--bd);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,144,10,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--g);">
-                <i class="bi bi-award-fill"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Sponsors</div>
-                <div style="font-size:.72rem;color:var(--mut);">Our proud partners &amp; supporters</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
-        <a href="{{ route('frontend.scoring') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(220,38,38,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--red);">
-                <i class="bi bi-broadcast"></i>
-            </div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Live Scoring</div>
-                <div style="font-size:.72rem;color:var(--mut);">Score matches live (key required)</div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
-        </a>
+        @endforeach
     </div>
 
     @if(auth()->check())
-    <div class="card" style="margin-bottom:.875rem;">
-        <a href="{{ route('admin.dashboard') }}" style="display:flex;align-items:center;gap:.875rem;padding:.875rem;text-decoration:none;color:var(--txt);">
-            <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,230,118,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--p);">
-                <i class="bi bi-shield-lock-fill"></i>
+    <div class="card" style="overflow:hidden;margin-bottom:.75rem;">
+        <a href="{{ route('admin.dashboard') }}"
+           style="display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;text-decoration:none;color:var(--txt);">
+            <div style="width:40px;height:40px;border-radius:12px;background:rgba(0,230,118,.12);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">
+                <i class="bi bi-shield-lock-fill" style="color:var(--p);"></i>
             </div>
             <div style="flex:1;">
-                <div style="font-weight:700;font-size:.9rem;">Admin Panel</div>
-                <div style="font-size:.72rem;color:var(--mut);">Manage matches, teams &amp; players</div>
+                <div style="font-weight:700;font-size:.9rem;color:var(--txt);">Admin Panel</div>
+                <div style="font-size:.7rem;color:var(--mut);margin-top:.08rem;">Manage matches, teams & players</div>
             </div>
-            <i class="bi bi-chevron-right" style="color:var(--mut);"></i>
+            <i class="bi bi-chevron-right" style="color:var(--mut);font-size:.85rem;"></i>
         </a>
     </div>
     @endif
 
-    <div class="card">
-        <div style="padding:1.25rem;text-align:center;">
-            <img src="/logo.jfif" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--p);margin-bottom:.75rem;">
-            <div style="font-weight:900;font-size:.95rem;" class="grad">Royal Champions League</div>
-            <div style="font-size:.72rem;color:var(--mut);margin-top:.25rem;">Powered by Village Cricket Council (VCC)</div>
-            <div style="font-size:.7rem;color:var(--mut);margin-top:.75rem;">
-                @php $ed = \App\Models\Edition::where('is_current',true)->first(); @endphp
-                {{ $ed ? $ed->edition_number.'th Edition' : 'RCL' }}
-            </div>
+    <div class="card" style="padding:1.5rem 1rem;text-align:center;">
+        <img src="/logo.jfif" style="width:54px;height:54px;border-radius:50%;object-fit:cover;margin-bottom:.875rem;border:2px solid rgba(0,230,118,.4);box-shadow:0 0 24px rgba(0,230,118,.2);">
+        <div style="font-weight:900;font-size:.95rem;margin-bottom:.25rem;" class="grad">Royal Champions League</div>
+        <div style="font-size:.7rem;color:var(--mut);">Village Cricket Council · Pakistan</div>
+        <div style="font-size:.6rem;color:var(--mut);margin-top:.875rem;padding-top:.875rem;border-top:1px solid rgba(255,255,255,.06);">
+            Developed by <span style="color:var(--p);font-weight:700;">Sarfraz Jutt</span>
         </div>
     </div>
 </div>
+
+<div style="height:.5rem;"></div>
 @endsection
