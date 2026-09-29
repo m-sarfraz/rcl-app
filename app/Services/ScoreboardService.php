@@ -48,7 +48,7 @@ class ScoreboardService
                 'overs'      => (int) $match->overs_per_side,
                 'toss'       => $this->tossLine($match),
                 'result'     => $match->result_description,
-                'starts_at'  => $match->scheduled_at?->toIso8601String(),
+                'starts_at'  => $match->scheduled_at?->timezone('Asia/Karachi')->toIso8601String(),
                 'is_super_over' => (bool) $match->is_super_over,
             ],
             'teams' => [

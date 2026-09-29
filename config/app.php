@@ -79,7 +79,7 @@ return [
 
     'admin_access_token' => env('ADMIN_ACCESS_TOKEN'),
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'Asia/Karachi'),
 
     /*
     |--------------------------------------------------------------------------
