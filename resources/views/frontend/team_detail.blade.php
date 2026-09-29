@@ -214,6 +214,9 @@
                 @endif
 
                 <div style="font-weight:700;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $player->name }}</div>
+                @if(!empty($player->father_name))
+                <div style="font-size:.64rem;color:var(--mut);line-height:1.2;margin-top:.1rem;">s/o {{ $player->father_name }}</div>
+                @endif
                 <div style="font-size:.68rem;color:var(--mut);margin-top:.1rem;">{{ ucwords(str_replace('_',' ',$player->role ?? 'Player')) }}</div>
 
                 @if($stat && ($stat->total_runs > 0 || $stat->total_wickets > 0))

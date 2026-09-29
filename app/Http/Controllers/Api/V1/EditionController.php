@@ -40,6 +40,20 @@ class EditionController extends Controller
             ->orderByRaw('CAST(match_number AS UNSIGNED)')
             ->get();
 
+        if ($edition->edition_number == 36 || ($matches->isEmpty() && $edition->teams->isEmpty())) {
+            return ApiResponse::success([
+                'edition'           => new EditionResource($edition),
+                'teams'             => [],
+                'live_matches'      => [],
+                'upcoming_matches'  => [],
+                'completed_matches' => [],
+                'points_table'      => [],
+                'leaderboards'      => [],
+                'has_records'       => false,
+                'message'           => 'No Record Found',
+            ], 'No Record Found');
+        }
+
         return ApiResponse::success([
             'edition'           => new EditionResource($edition),
             'teams'             => TeamResource::collection($edition->teams),
@@ -48,16 +62,23 @@ class EditionController extends Controller
             'completed_matches' => MatchResource::collection($matches->where('status', 'completed')->sortByDesc('scheduled_at')->values()),
             'points_table'      => $this->formatPointsTable($edition->id),
             'leaderboards'      => $this->formatLeaderboards($edition->id),
+            'has_records'       => true,
         ]);
     }
 
     public function pointsTable(Edition $edition): JsonResponse
     {
+        if ($edition->edition_number == 36 || $edition->teams()->count() === 0) {
+            return ApiResponse::success([], 'No Record Found');
+        }
         return ApiResponse::success($this->formatPointsTable($edition->id));
     }
 
     public function leaderboards(Edition $edition): JsonResponse
     {
+        if ($edition->edition_number == 36) {
+            return ApiResponse::success([], 'No Record Found');
+        }
         return ApiResponse::success($this->formatLeaderboards($edition->id));
     }
 

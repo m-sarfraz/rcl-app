@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 @section('title', $edition->name)
 
 @section('content')
@@ -18,7 +18,20 @@
     <div style="display:flex;justify-content:center;gap:.5rem;margin-top:.625rem;flex-wrap:wrap;">
         @if($edition->is_current)<span class="pill pill-green">Live Season</span>@elseif($edition->status==='completed')<span class="pill pill-muted">Completed</span>@endif
     </div>
-</div>
+@if($edition->edition_number == 36 || ($edition->teams->isEmpty() && $upcomingMatches->isEmpty() && $completedMatches->isEmpty() && $liveMatches->isEmpty()))
+    <div style="padding:4rem 1.5rem;text-align:center;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:2rem;color:var(--mut);">
+            <i class="bi bi-folder-x"></i>
+        </div>
+        <h3 style="font-weight:700;font-size:1.25rem;margin-bottom:.5rem;">No Record Found</h3>
+        <p style="color:var(--mut);font-size:.875rem;max-width:320px;margin:0 auto 1.5rem;">
+            No records, matches, or squads found for {{ $edition->name }}.
+        </p>
+        <a href="{{ route('tournaments.index') }}" style="display:inline-block;padding:.6rem 1.2rem;border-radius:10px;background:var(--p);color:#fff;text-decoration:none;font-weight:600;font-size:.85rem;">
+            View All Editions
+        </a>
+    </div>
+@else
 
 {{-- Tab Navigation --}}
 <div class="ed-tabs">
@@ -158,6 +171,7 @@
         </div>
     </div>
 </div>
+@endif
 
 @push('scripts')
 <script>

@@ -24,6 +24,7 @@ class MatchResource extends JsonResource
             'scheduled_at'       => $this->scheduled_at?->toIso8601String(),
             'status'             => $this->status,
             'overs_per_side'     => (int) $this->overs_per_side,
+            'notes'              => $this->notes,
 
             'home_team'          => new TeamResource($this->whenLoaded('homeTeam')),
             'away_team'          => new TeamResource($this->whenLoaded('awayTeam')),

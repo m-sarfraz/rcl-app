@@ -28,37 +28,33 @@ class DatabaseSeeder extends Seeder
             /* ── System settings, incl. the scoring passkey ─ */
             SiteSettingSeeder::class,
 
-            /* ── League structure ───────────────────────── */
+            /* ── League structure & Schedule ─────────────── */
             EditionSeeder::class,
             TeamSeeder::class,
-            VillageClubSeeder::class,
+            Edition37ScheduleSeeder::class,
+
+            /* ── Cabinet & Sponsors ─────────────────────── */
             VccCabinetSeeder::class,
+            SponsorSeeder::class,
 
-            /* ──
-             | Squads. Order matters: CompleteRosterSeeder creates the player
-             | rows that RealTeamDataSeeder then renames to the real village
-             | names, and RosterSeeder finally tops every club up to a full
-             | squad so no fixture is unplayable.
-             ── */
-            CompleteRosterSeeder::class,
-            RealTeamDataSeeder::class,
-            RosterSeeder::class,
+            /* ── Real Team Squads ────────────────────────── */
+            TeamSquadSeeder::class,
 
-            /* ── Fixtures ───────────────────────────────── */
-            Edition35MatchSeeder::class,
-
-            /* ── Governance ─────────────────────────────── */
-            DisciplinarySeeder::class,
-
-            /* ── Club crests and cabinet portraits ─────────── */
-            MediaSeeder::class,
-
-            /* ── Fan-facing content ─────────────────────── */
-            BannerSeeder::class,
-            EngagementSeeder::class,
-
-            /* ── Results & statistics (runs the real engine) ─ */
-            MatchStatisticsSeeder::class,
+            /*
+             * Squads, Fixtures, and Statistics are commented out.
+             * We will seed squads and real match data when provided.
+             */
+            // VillageClubSeeder::class,
+            // VccCabinetSeeder::class,
+            // CompleteRosterSeeder::class,
+            // RealTeamDataSeeder::class,
+            // RosterSeeder::class,
+            // Edition35MatchSeeder::class,
+            // DisciplinarySeeder::class,
+            // MediaSeeder::class,
+            // BannerSeeder::class,
+            // EngagementSeeder::class,
+            // MatchStatisticsSeeder::class,
         ]);
 
         $this->command?->newLine();

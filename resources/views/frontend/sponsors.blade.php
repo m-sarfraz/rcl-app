@@ -15,7 +15,7 @@
 
     @php
     $tierConfig = [
-        'title'   => ['label' => 'Title Sponsor',   'color' => 'var(--g)',    'bg' => 'rgba(212,144,10,.12)', 'size' => '80px'],
+        'title'   => ['label' => 'Head Sponsors',    'color' => 'var(--g)',    'bg' => 'rgba(212,144,10,.12)', 'size' => '90px'],
         'gold'    => ['label' => 'Gold Sponsors',    'color' => 'var(--g)',    'bg' => 'rgba(212,144,10,.08)', 'size' => '64px'],
         'silver'  => ['label' => 'Silver Sponsors',  'color' => '#9CA3AF',    'bg' => 'rgba(156,163,175,.1)', 'size' => '56px'],
         'general' => ['label' => 'Our Supporters',   'color' => 'var(--p)',   'bg' => 'rgba(27,138,78,.08)',  'size' => '48px'],
@@ -34,10 +34,10 @@
             @php $wrapped = $s->website ? 'a' : 'div'; @endphp
             <{{ $wrapped }}
                 @if($s->website) href="{{ $s->website }}" target="_blank" rel="noopener" @endif
-                style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:1rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;text-decoration:none;flex:1;min-width:120px;max-width:160px;box-shadow:0 2px 10px rgba(0,0,0,.06);">
+                style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:1rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;text-decoration:none;flex:1;min-width:130px;max-width:170px;box-shadow:0 2px 10px rgba(0,0,0,.06);">
                 @if($s->logo)
                     <img src="{{ asset('storage/'.$s->logo) }}" alt="{{ $s->name }}"
-                         style="height:{{ $cfg['size'] }};max-width:120px;object-fit:contain;">
+                         style="height:{{ $cfg['size'] }};max-width:130px;object-fit:cover;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1);">
                 @else
                     <div style="width:{{ $cfg['size'] }};height:{{ $cfg['size'] }};border-radius:12px;background:{{ $cfg['bg'] }};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.4rem;color:{{ $cfg['color'] }};">
                         {{ strtoupper(substr($s->name,0,1)) }}

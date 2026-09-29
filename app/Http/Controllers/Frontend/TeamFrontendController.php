@@ -28,7 +28,7 @@ class TeamFrontendController extends Controller
                 ->where('player_team_editions.team_id', '=', $team->id)
                 ->where('player_team_editions.edition_id', '=', $currentEdition->id)
                 ->select(
-                    'players.id', 'players.name', 'players.jersey_number',
+                    'players.id', 'players.name', 'players.father_name', 'players.jersey_number',
                     'players.role', 'players.batting_style', 'players.bowling_style',
                     'players.photo', 'players.phone', 'players.bio',
                     'player_team_editions.is_captain',
