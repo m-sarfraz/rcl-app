@@ -130,4 +130,107 @@ class DisciplineController extends Controller
             ];
         })->values());
     }
+
+    /** Demerit points ledger and standings by team, player, and other categories. */
+    public function demeritPoints(Request $request): JsonResponse
+    {
+        $editionId = $request->integer('edition_id') ?: null;
+
+        // Fetch all active incidents
+        $incidents = \App\Models\DemeritPoint::with(['player.currentTeam', 'team', 'edition', 'match.homeTeam', 'match.awayTeam'])
+            ->active()
+            ->when($editionId, fn ($q) => $q->where('edition_id', $editionId))
+            ->orderByDesc('incident_date')
+            ->get();
+
+        // Distinct category tabs
+        $dbCategories = \App\Models\DemeritPoint::distinct()->pluck('target_type')->toArray();
+        $allCategories = array_values(array_unique(array_merge(['player', 'team', 'umpire'], $dbCategories)));
+
+        $categories = collect($allCategories)->map(fn ($cat) => [
+            'slug'  => $cat,
+            'label' => $cat === 'player' ? 'Players' : ($cat === 'team' ? 'Teams' : ($cat === 'umpire' ? 'Umpires' : ucfirst($cat))),
+        ])->values();
+
+        // 1. Teams: All active teams with demerit points (0 if none)
+        $teamIncidents = $incidents->where('target_type', 'team')->groupBy('team_id');
+        $teams = Team::active()->orderBy('name')->get()->map(function ($team) use ($teamIncidents) {
+            $group = $teamIncidents->get($team->id, collect());
+            $pts = (int) $group->sum('points');
+
+            return [
+                'team'           => new TeamResource($team),
+                'demerit_points' => $pts,
+                'status'         => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? 'banned' : ($pts === 2 ? 'critical' : ($pts === 1 ? 'warning' : 'safe')),
+                'color'          => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? 'red' : ($pts === 2 ? 'red' : ($pts === 1 ? 'yellow' : 'green')),
+                'color_code'     => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? '#ef4444' : ($pts === 2 ? '#ef4444' : ($pts === 1 ? '#eab308' : '#22c55e')),
+                'is_banned'      => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN,
+                'incident_count' => $group->count(),
+                'incidents'      => \App\Http\Resources\DemeritPointResource::collection($group->values()),
+            ];
+        })->sortByDesc('demerit_points')->values();
+
+        // 2. Players: Players who have demerit points
+        $playerIncidents = $incidents->where('target_type', 'player')->groupBy('player_id');
+        $playerIds = $playerIncidents->keys();
+        $players = \App\Models\Player::with('currentTeam')
+            ->whereIn('id', $playerIds)
+            ->get()
+            ->map(function ($player) use ($playerIncidents) {
+                $group = $playerIncidents->get($player->id, collect());
+                $pts = (int) $group->sum('points');
+
+                return [
+                    'player'         => new \App\Http\Resources\PlayerResource($player),
+                    'demerit_points' => $pts,
+                    'status'         => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? 'banned' : ($pts === 2 ? 'critical' : ($pts === 1 ? 'warning' : 'safe')),
+                    'color'          => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? 'red' : ($pts === 2 ? 'red' : ($pts === 1 ? 'yellow' : 'green')),
+                    'color_code'     => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? '#ef4444' : ($pts === 2 ? '#ef4444' : ($pts === 1 ? '#eab308' : '#22c55e')),
+                    'is_banned'      => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN,
+                    'incident_count' => $group->count(),
+                    'incidents'      => \App\Http\Resources\DemeritPointResource::collection($group->values()),
+                ];
+            })->sortByDesc('demerit_points')->values();
+
+        // 3. Other categories (Umpires, Custom)
+        $otherIncidents = $incidents->whereNotIn('target_type', ['player', 'team'])->groupBy('target_type');
+        $others = $otherIncidents->map(function ($group, $category) {
+            return $group->groupBy('target_name')->map(function ($entityGroup, $name) use ($category) {
+                $pts = (int) $entityGroup->sum('points');
+                return [
+                    'name'           => $name ?: 'Unnamed',
+                    'category'       => $category,
+                    'demerit_points' => $pts,
+                    'status'         => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? 'banned' : ($pts === 2 ? 'critical' : ($pts === 1 ? 'warning' : 'safe')),
+                    'color'          => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? 'red' : ($pts === 2 ? 'red' : ($pts === 1 ? 'yellow' : 'green')),
+                    'color_code'     => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN ? '#ef4444' : ($pts === 2 ? '#ef4444' : ($pts === 1 ? '#eab308' : '#22c55e')),
+                    'is_banned'      => $pts >= \App\Models\DemeritPoint::THRESHOLD_BAN,
+                    'incident_count' => $entityGroup->count(),
+                    'incidents'      => \App\Http\Resources\DemeritPointResource::collection($entityGroup->values()),
+                ];
+            })->values();
+        });
+
+        return ApiResponse::success([
+            'rule_note'       => \App\Models\DemeritPoint::RULE_NOTE,
+            'threshold'       => \App\Models\DemeritPoint::THRESHOLD_BAN,
+            'color_scale'     => [
+                0  => ['label' => '0 points', 'color' => 'green',  'hex' => '#22c55e', 'status' => 'safe'],
+                1  => ['label' => '1 point',  'color' => 'yellow', 'hex' => '#eab308', 'status' => 'warning'],
+                2  => ['label' => '2 points', 'color' => 'red',    'hex' => '#ef4444', 'status' => 'critical'],
+                '3+' => ['label' => '3+ points', 'color' => 'banned', 'hex' => '#ef4444', 'status' => 'banned'],
+            ],
+            'categories'      => $categories,
+            'summary'         => [
+                'total_points'         => (int) $incidents->sum('points'),
+                'banned_players_count' => $players->where('is_banned', true)->count(),
+                'banned_teams_count'   => $teams->where('is_banned', true)->count(),
+                'total_incidents'      => $incidents->count(),
+            ],
+            'teams'           => $teams,
+            'players'         => $players,
+            'others'          => $others,
+            'all_incidents'   => \App\Http\Resources\DemeritPointResource::collection($incidents),
+        ]);
+    }
 }

@@ -87,6 +87,16 @@ class Player extends Model
         return $this->bans()->where('is_active', true);
     }
 
+    public function demeritPoints(): HasMany
+    {
+        return $this->hasMany(DemeritPoint::class);
+    }
+
+    public function activeDemeritPoints(): HasMany
+    {
+        return $this->demeritPoints()->where('is_active', true);
+    }
+
     /**
      * Why this player may not be picked, or null when they are available.
      * Mirrors scopeEligible() so the console and the query agree.
@@ -106,6 +116,11 @@ class Player extends Model
             : $this->fines()->where('status', 'unpaid')->exists()) {
             return 'Unpaid fine';
         }
+        if ($this->relationLoaded('demeritPoints')
+            ? $this->demeritPoints->where('is_active', true)->sum('points') >= DemeritPoint::THRESHOLD_BAN
+            : $this->activeDemeritPoints()->sum('points') >= DemeritPoint::THRESHOLD_BAN) {
+            return 'Banned (Demerit points threshold reached)';
+        }
 
         return null;
     }
@@ -115,8 +130,9 @@ class Player extends Model
         $hasUnpaidFine = $this->fines()->where('status', 'unpaid')->exists();
         $isSuspended = $this->suspensions()->where('is_active', true)->exists();
         $isBanned = $this->bowling_action_status === 'banned';
+        $isDemeritBanned = $this->activeDemeritPoints()->sum('points') >= DemeritPoint::THRESHOLD_BAN;
 
-        return !$hasUnpaidFine && !$isSuspended && !$isBanned;
+        return !$hasUnpaidFine && !$isSuspended && !$isBanned && !$isDemeritBanned;
     }
 
     public function scopeEligible($query)

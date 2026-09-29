@@ -47,4 +47,14 @@ class Team extends Model
     {
         return $this->hasMany(CricketMatch::class, 'away_team_id');
     }
+
+    public function demeritPoints(): HasMany
+    {
+        return $this->hasMany(DemeritPoint::class);
+    }
+
+    public function activeDemeritPoints(): HasMany
+    {
+        return $this->demeritPoints()->where('is_active', true);
+    }
 }

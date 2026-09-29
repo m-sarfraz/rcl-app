@@ -69,10 +69,11 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::get('leaderboards', [StatsController::class, 'index']);
 
     /* ── Player governance ─────────────────────────────────────── */
-    Route::get('bans',        [DisciplineController::class, 'bans']);
-    Route::get('fines',       [DisciplineController::class, 'fines']);
-    Route::get('suspensions', [DisciplineController::class, 'suspensions']);
-    Route::get('captains',    [DisciplineController::class, 'captains']);
+    Route::get('bans',           [DisciplineController::class, 'bans']);
+    Route::get('fines',          [DisciplineController::class, 'fines']);
+    Route::get('suspensions',    [DisciplineController::class, 'suspensions']);
+    Route::get('captains',       [DisciplineController::class, 'captains']);
+    Route::get('demerit-points', [DisciplineController::class, 'demeritPoints']);
 
     /* ── VCC & sponsors ────────────────────────────────────────── */
     Route::get('vcc',      [VccController::class, 'index']);

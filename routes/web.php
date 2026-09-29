@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\EmbedController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DemeritPointController;
 use App\Http\Controllers\Admin\EditionController;
 use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\FinanceController;
@@ -169,6 +170,11 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     // Polls
     Route::resource('polls', PollController::class)->except(['show','edit','update']);
     Route::patch('polls/{poll}/toggle',   [PollController::class, 'toggle'])->name('polls.toggle');
+
+    // Demerit Points
+    Route::get('demerit-points/players-by-team/{team}',  [DemeritPointController::class, 'playersByTeam'])->name('demerit-points.players-by-team');
+    Route::patch('demerit-points/{demeritPoint}/toggle', [DemeritPointController::class, 'toggle'])->name('demerit-points.toggle');
+    Route::resource('demerit-points', DemeritPointController::class)->except(['show']);
 
     // Banned Bowlers
     Route::get('banned-bowlers',                          [BannedBowlerController::class, 'index'])->name('banned-bowlers.index');

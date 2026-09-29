@@ -194,6 +194,9 @@
         </a>
 
         <div class="nav-section-label mt-2">Disciplinary</div>
+        <a href="{{ route('admin.demerit-points.index') }}" class="nav-link {{ request()->routeIs('admin.demerit-points.*') ? 'active' : '' }}">
+            <i class="bi bi-shield-slash-fill"></i> Demerit Points
+        </a>
         <a href="{{ route('admin.fines.index') }}" class="nav-link {{ request()->routeIs('admin.fines.*') ? 'active' : '' }}">
             <i class="bi bi-exclamation-triangle-fill"></i> Fines
         </a>

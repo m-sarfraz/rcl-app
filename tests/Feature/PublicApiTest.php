@@ -79,8 +79,9 @@ class PublicApiTest extends TestCase
             'fines'        => ['/api/v1/fines'],
             'suspensions'  => ['/api/v1/suspensions'],
             'captains'     => ['/api/v1/captains'],
-            'vcc'          => ['/api/v1/vcc'],
-            'sponsors'     => ['/api/v1/sponsors'],
+            'vcc'            => ['/api/v1/vcc'],
+            'sponsors'       => ['/api/v1/sponsors'],
+            'demerit-points' => ['/api/v1/demerit-points'],
         ];
     }
 

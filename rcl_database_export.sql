@@ -397,6 +397,53 @@ INSERT INTO `cricket_matches` VALUES (1,2,3,6,'1','group','Chak No 183','2026-10
 UNLOCK TABLES;
 
 --
+-- Table structure for table `demerit_points`
+--
+
+DROP TABLE IF EXISTS `demerit_points`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `demerit_points` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `edition_id` bigint(20) unsigned DEFAULT NULL,
+  `target_type` varchar(191) NOT NULL DEFAULT 'player',
+  `team_id` bigint(20) unsigned DEFAULT NULL,
+  `player_id` bigint(20) unsigned DEFAULT NULL,
+  `target_name` varchar(191) DEFAULT NULL,
+  `match_id` bigint(20) unsigned DEFAULT NULL,
+  `points` int(10) unsigned NOT NULL DEFAULT 1,
+  `reason` text NOT NULL,
+  `incident_date` date NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `notes` text DEFAULT NULL,
+  `issued_by` bigint(20) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `demerit_points_match_id_foreign` (`match_id`),
+  KEY `demerit_points_issued_by_foreign` (`issued_by`),
+  KEY `demerit_points_target_type_is_active_index` (`target_type`,`is_active`),
+  KEY `demerit_points_team_id_is_active_index` (`team_id`,`is_active`),
+  KEY `demerit_points_player_id_is_active_index` (`player_id`,`is_active`),
+  KEY `demerit_points_edition_id_is_active_index` (`edition_id`,`is_active`),
+  CONSTRAINT `demerit_points_edition_id_foreign` FOREIGN KEY (`edition_id`) REFERENCES `editions` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `demerit_points_issued_by_foreign` FOREIGN KEY (`issued_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `demerit_points_match_id_foreign` FOREIGN KEY (`match_id`) REFERENCES `cricket_matches` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `demerit_points_player_id_foreign` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `demerit_points_team_id_foreign` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `demerit_points`
+--
+
+LOCK TABLES `demerit_points` WRITE;
+/*!40000 ALTER TABLE `demerit_points` DISABLE KEYS */;
+/*!40000 ALTER TABLE `demerit_points` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `edition_teams`
 --
 
@@ -780,7 +827,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(191) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -789,7 +836,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2024_01_01_000001_create_roles_table',1),(2,'2024_01_01_000002_create_users_table',1),(3,'2024_01_01_000003_create_vcc_cabinets_table',1),(4,'2024_01_01_000004_create_editions_table',1),(5,'2024_01_01_000005_create_teams_table',1),(6,'2024_01_01_000006_create_players_table',1),(7,'2024_01_01_000007_create_matches_table',1),(8,'2024_01_01_000008_create_ball_by_ball_logs_table',1),(9,'2024_01_01_000009_create_player_stats_table',1),(10,'2024_01_01_000010_create_fines_table',1),(11,'2024_01_01_000011_create_finance_table',1),(12,'2024_01_01_000012_create_polls_table',1),(13,'2024_01_01_000013_create_notifications_table',1),(14,'2024_01_01_000014_create_notifications_and_roster_tables',1),(15,'2024_01_01_000015_add_slug_to_roles_and_label_to_permissions',1),(16,'2024_01_01_000016_add_mvp_count_to_player_edition_stats',1),(17,'2024_01_01_000017_create_banners_table',1),(18,'2026_05_19_031352_create_banned_bowlers_table',1),(19,'2026_05_19_145607_create_site_settings_table',1),(20,'2026_05_19_162513_create_sponsors_table',1),(21,'2026_05_19_164654_add_father_name_to_players',1),(22,'2026_05_19_164654_add_team_to_fines_and_player_nullable',1),(23,'2026_05_20_163429_add_cover_photo_to_teams_table',1),(24,'2026_05_20_165249_make_image_path_nullable_on_banners',1),(25,'2026_08_20_100000_extend_player_edition_stats',1),(26,'2026_08_20_100100_add_scoring_columns_to_matches',1),(27,'2026_08_20_100200_add_scoring_fidelity_to_ball_logs',1);
+INSERT INTO `migrations` VALUES (1,'2024_01_01_000001_create_roles_table',1),(2,'2024_01_01_000002_create_users_table',1),(3,'2024_01_01_000003_create_vcc_cabinets_table',1),(4,'2024_01_01_000004_create_editions_table',1),(5,'2024_01_01_000005_create_teams_table',1),(6,'2024_01_01_000006_create_players_table',1),(7,'2024_01_01_000007_create_matches_table',1),(8,'2024_01_01_000008_create_ball_by_ball_logs_table',1),(9,'2024_01_01_000009_create_player_stats_table',1),(10,'2024_01_01_000010_create_fines_table',1),(11,'2024_01_01_000011_create_finance_table',1),(12,'2024_01_01_000012_create_polls_table',1),(13,'2024_01_01_000013_create_notifications_table',1),(14,'2024_01_01_000014_create_notifications_and_roster_tables',1),(15,'2024_01_01_000015_add_slug_to_roles_and_label_to_permissions',1),(16,'2024_01_01_000016_add_mvp_count_to_player_edition_stats',1),(17,'2024_01_01_000017_create_banners_table',1),(18,'2026_05_19_031352_create_banned_bowlers_table',1),(19,'2026_05_19_145607_create_site_settings_table',1),(20,'2026_05_19_162513_create_sponsors_table',1),(21,'2026_05_19_164654_add_father_name_to_players',1),(22,'2026_05_19_164654_add_team_to_fines_and_player_nullable',1),(23,'2026_05_20_163429_add_cover_photo_to_teams_table',1),(24,'2026_05_20_165249_make_image_path_nullable_on_banners',1),(25,'2026_08_20_100000_extend_player_edition_stats',1),(26,'2026_08_20_100100_add_scoring_columns_to_matches',1),(27,'2026_08_20_100200_add_scoring_fidelity_to_ball_logs',1),(28,'2026_09_30_000001_create_demerit_points_table',2);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1474,4 +1521,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-29 22:11:40
+-- Dump completed on 2026-09-29 23:47:39
