@@ -333,7 +333,7 @@ class ScoreboardService
             'balls'   => (int) ($card->balls_faced ?? 0),
             'how'     => str_replace('_', ' ', (string) $ball->wicket_type),
             'at'      => "{$ball->batting_team_score_after}/{$ball->batting_team_wickets_after}",
-            'over'    => "{$ball->over_number}.{$ball->ball_number}",
+            'over'    => max(0, (int) $ball->over_number - 1) . '.' . $ball->ball_number,
             'display' => sprintf(
                 '%s %d (%d) — %s, %s/%d in %d.%d',
                 $this->shortName($name),
@@ -342,7 +342,7 @@ class ScoreboardService
                 str_replace('_', ' ', (string) $ball->wicket_type),
                 $ball->batting_team_score_after,
                 $ball->batting_team_wickets_after,
-                $ball->over_number,
+                max(0, (int) $ball->over_number - 1),
                 $ball->ball_number,
             ),
         ];

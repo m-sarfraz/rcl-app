@@ -100,7 +100,7 @@ class EmbedController extends Controller
 
     public function widget(Request $request, CricketMatch $match): Response
     {
-        $requested = (string) $request->query('layout', 'card');
+        $requested = (string) $request->query('layout', 'broadcast');
         $requested = self::ALIASES[$requested] ?? $requested;
 
         $layout = in_array($requested, self::LAYOUTS, true) ? $requested : 'card';

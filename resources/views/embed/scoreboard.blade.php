@@ -127,85 +127,111 @@ html, body {
 .fade { transition: opacity .16s ease; }
 .fade.out { opacity: .45; }
 
-/* ══ broadcast — the full bottom bar (White, Blue, Red Theme) ═══════════════════════════ */
+/* ══ broadcast — the full bottom bar (White, Blue, Navy, Red Gradients) ═════════════════════ */
 
-[data-layout="broadcast"] body { padding: 0; }
-[data-layout="broadcast"] .board {
-    display: flex; align-items: stretch;
-    height: 135px; max-width: 1920px;
-    border-radius: 12px; overflow: hidden;
+[data-layout="broadcast"] body,
+[data-layout="lower"] body { padding: 0; }
+[data-layout="broadcast"] .board,
+[data-layout="lower"] .board {
+    display: flex; align-items: center;
+    height: 140px; max-width: 1920px;
+    border-radius: 16px; overflow: hidden;
     background: #FFFFFF;
-    box-shadow: 0 14px 44px rgba(0,0,0,.42);
-    border: 1px solid #E2E8F0;
+    box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    border: 1px solid #CBD5E1;
+    padding: 0 6px;
 }
-.bc-team-badge {
-    width: 220px; flex: 0 0 auto;
-    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
-    padding: 12px 18px; color: #FFFFFF;
-    background: #1D4ED8;
-}
-.bc-team-badge .code { font-size: 36px; font-weight: 900; letter-spacing: .6px; line-height: 1; }
-.bc-team-badge .name { font-size: 13px; font-weight: 700; opacity: .88; text-transform: uppercase;
-                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
 
+/* 1. Left & 5. Right Team Badges (Gradients: Royal Blue to Navy) */
+.bc-team-badge {
+    width: 200px; flex: 0 0 auto;
+    height: calc(100% - 12px);
+    display: flex; justify-content: center; align-items: center;
+    padding: 0 16px; color: #FFFFFF;
+    border-radius: 12px;
+}
+.bc-team-left {
+    background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 50%, #0F172A 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.bc-team-right {
+    background: linear-gradient(135deg, #0F172A 0%, #1D4ED8 50%, #1E40AF 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.bc-team-badge .code {
+    font-size: 38px; font-weight: 900; letter-spacing: 1px; line-height: 1;
+    text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+/* 2. Current Batters Section (White BG, Increased Font Sizes) */
 .bc-batters {
     flex: 1.25; min-width: 0;
+    height: 100%;
     display: flex; flex-direction: column; justify-content: center; gap: 10px;
-    padding: 12px 24px; background: #FFFFFF; color: #0F172A;
+    padding: 0 20px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    color: #0F172A;
     border-right: 1px solid #F1F5F9;
 }
-.bc-batter { display: flex; align-items: center; justify-content: space-between; font-size: 19px; font-weight: 800; }
-.bc-batter .name { display: flex; align-items: center; gap: 6px; color: #0F172A; }
-.bc-batter.striker .name::before { content: '▶'; color: #DC2626; font-size: 14px; }
-.bc-batter .score { font-weight: 900; color: #0F172A; }
-.bc-batter .balls { font-size: 14px; font-weight: 700; color: #64748B; margin-left: 4px; }
-
-.bc-score-capsule {
-    flex: 1.45; min-width: 0;
-    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px;
-    padding: 12px 24px; background: #DC2626; color: #FFFFFF;
+.bc-batter {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 21px; font-weight: 800;
 }
-.bc-score-main { display: flex; align-items: baseline; gap: 10px; }
-.bc-score-team { font-size: 24px; font-weight: 900; color: rgba(255,255,255,.94); }
-.bc-score-val  { font-size: 46px; font-weight: 900; letter-spacing: -1.2px; line-height: 1; color: #FFFFFF; }
-.bc-score-ov   { font-size: 20px; font-weight: 800; color: #FEF08A; }
-.bc-score-sub  { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: .4px; }
+.bc-batter .name {
+    display: flex; align-items: center; gap: 8px; color: #0F172A;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px;
+}
+.bc-batter.striker .name::before {
+    content: '▶'; color: #DC2626; font-size: 15px; margin-right: 2px;
+}
+.bc-batter .score { font-size: 23px; font-weight: 900; color: #0F172A; }
+.bc-batter .balls { font-size: 16px; font-weight: 700; color: #64748B; margin-left: 4px; }
 
+/* 3. Center Red Capsule (Total Score & Overs & Target, Rounded Corners) */
+.bc-score-capsule {
+    flex: 1.5; min-width: 0;
+    height: calc(100% - 14px);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
+    padding: 6px 24px;
+    margin: 0 8px;
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 50%, #991B1B 100%);
+    color: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(220,38,38,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    border: 1.5px solid rgba(254,202,202,0.45);
+}
+.bc-score-main { display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+.bc-score-team { font-size: 24px; font-weight: 900; color: #FEF08A; letter-spacing: 0.5px; }
+.bc-score-val  { font-size: 46px; font-weight: 900; letter-spacing: -1.2px; line-height: 1; color: #FFFFFF; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.bc-score-ov   { font-size: 20px; font-weight: 800; color: #FEF08A; }
+.bc-score-sub  { font-size: 13.5px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.4px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); text-transform: uppercase; }
+
+/* 4. Bowler Figures & Current Over Section */
 .bc-bowler {
-    flex: 1.15; min-width: 0;
+    flex: 1.25; min-width: 0;
+    height: 100%;
     display: flex; flex-direction: column; justify-content: center; gap: 8px;
-    padding: 12px 24px; background: #FFFFFF; color: #0F172A;
+    padding: 0 20px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    color: #0F172A;
     border-left: 1px solid #F1F5F9;
 }
-.bc-bowler .name { font-size: 18px; font-weight: 800; color: #0F172A; }
-.bc-bowler .fig  { font-size: 22px; font-weight: 900; color: #1D4ED8; }
-.bc-bowler .ov   { font-size: 14px; font-weight: 700; color: #64748B; margin-left: 4px; }
-
-/* ══ lower — compact third ═════════════════════════════════════ */
-
-[data-layout="lower"] body { padding: 0; }
-[data-layout="lower"] .board {
-    display: inline-flex; align-items: stretch;
-    border-radius: 13px; overflow: hidden;
-    box-shadow: 0 10px 34px rgba(0,0,0,.36);
+.bc-bowler-top {
+    display: flex; align-items: baseline; justify-content: space-between;
 }
-.lw-team {
-    display: flex; align-items: center; gap: 11px;
-    padding: 13px 19px; color: #fff;
-    background: var(--panel);
+.bc-bowler-top .name {
+    font-size: 21px; font-weight: 800; color: #0F172A;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;
 }
-.lw-team.batting { background: linear-gradient(135deg, var(--team-colour, var(--accent)), rgba(9,17,28,.95)); }
-.lw-team .code  { font-size: 18px; font-weight: 900; letter-spacing: .5px; }
-.lw-team .score { font-size: 25px; font-weight: 900; letter-spacing: -.7px; }
-.lw-team .overs { font-size: 12px; font-weight: 700; opacity: .78; }
-.lw-mid {
-    display: flex; flex-direction: column; justify-content: center; gap: 3px;
-    padding: 10px 19px; background: #fff; min-width: 230px;
+.bc-bowler-top .fig { font-size: 23px; font-weight: 900; color: #1D4ED8; }
+.bc-bowler-top .ov  { font-size: 16px; font-weight: 700; color: #64748B; margin-left: 4px; }
+.bc-bowler-balls {
+    display: flex; align-items: center; gap: 6px;
 }
-/* Fixed colours, not theme tokens: this panel is always white. */
-.lw-mid .top { font-size: 14px; font-weight: 800; color: #0B1220; }
-.lw-mid .sub { font-size: 11.5px; font-weight: 600; color: #64748B; }
-.lw-strip { display: flex; align-items: center; gap: 5px; padding: 10px 15px; background: var(--panel); }
+.bc-bowler-balls.empty-over {
+    font-size: 14px; font-weight: 700; color: #64748B;
+}
 
 /* ══ bug — corner score ════════════════════════════════════════ */
 
@@ -411,17 +437,16 @@ html, body {
         var bowlSide = (bat === 'home') ? 'away' : 'home';
         var oTeam = d.teams[bowlSide];
 
-        // 1. Left Team (Batting Team)
-        var left = '<div class="bc-team-badge">'
-                 +   '<div class="code">' + esc(bTeam.short) + '</div>'
-                 +   '<div class="name">' + esc(bTeam.name) + '</div>'
+        // 1. Left Team (Batting Team) - Team name only with larger font
+        var left = '<div class="bc-team-badge bc-team-left">'
+                 +   '<div class="code">' + esc(bTeam.short || bTeam.name) + '</div>'
                  + '</div>';
 
-        // 2. Batters Section (2 batters with score and balls played)
+        // 2. Batters Section (Current batters with score and balls played, increased font sizes)
         var batters = '<div class="bc-batters">';
         if (c && c.striker) {
             batters += '<div class="bc-batter striker">'
-                    +    '<span class="name">' + esc(c.striker.short) + '</span>'
+                    +    '<span class="name">' + esc(c.striker.short || c.striker.name) + '</span>'
                     +    '<span class="score">' + esc(c.striker.runs) + '<span class="balls">(' + esc(c.striker.balls) + ')</span></span>'
                     +  '</div>';
         } else {
@@ -429,7 +454,7 @@ html, body {
         }
         if (c && c.non_striker) {
             batters += '<div class="bc-batter">'
-                    +    '<span class="name" style="padding-left:14px">' + esc(c.non_striker.short) + '</span>'
+                    +    '<span class="name" style="padding-left:14px">' + esc(c.non_striker.short || c.non_striker.name) + '</span>'
                     +    '<span class="score">' + esc(c.non_striker.runs) + '<span class="balls">(' + esc(c.non_striker.balls) + ')</span></span>'
                     +  '</div>';
         } else {
@@ -437,36 +462,52 @@ html, body {
         }
         batters += '</div>';
 
-        // 3. Center Red Capsule (Total Score & Overs with Batting Team name/code)
-        var scoreLine = (bTeam.score || '0-0').replace('/', '-');
+        // 3. Center Red Capsule (Total Score & Overs & Target, Rounded Corners)
+        var scoreLine = ((c ? c.score : bTeam.score) || '0-0').replace('/', '-');
+        var liveOvers = (c && c.overs) ? c.overs : (bTeam.overs || '0.0');
+        var targetText = '';
+        if (c && c.target) {
+            var need = c.need != null ? c.need : Math.max(0, c.target - (c.runs || 0));
+            var ballsLeft = c.balls_left != null ? c.balls_left : 0;
+            targetText = 'NEED ' + need + ' IN ' + ballsLeft + 'b (TARGET ' + c.target + ')';
+        } else {
+            targetText = '1ST INNINGS • MAX ' + (d.match.overs || 10) + ' OV';
+        }
+
         var scoreCapsule = '<div class="bc-score-capsule">'
                          +   '<div class="bc-score-main">'
                          +     '<span class="bc-score-team">' + esc(bTeam.short) + '.</span>'
                          +     '<span class="bc-score-val">' + esc(scoreLine) + '</span>'
-                         +     '<span class="bc-score-ov">' + esc(bTeam.overs || '0.0') + ' ov</span>'
-                         +   '</div>';
-        if (c && c.this_over && c.this_over.length) {
-            scoreCapsule += '<div class="balls" style="margin-top:2px">' + chips(c.this_over, 7) + '</div>';
-        } else {
-            scoreCapsule += '<div class="bc-score-sub">' + esc(d.status_line || (d.match.overs_per_side + ' OVERS MATCH')) + '</div>';
-        }
-        scoreCapsule += '</div>';
+                         +     '<span class="bc-score-ov">' + esc(liveOvers) + ' ov</span>'
+                         +   '</div>'
+                         +   '<div class="bc-score-sub">' + esc(targetText) + '</div>'
+                         + '</div>';
 
-        // 4. Bowler Figures Section
+        // 4. Bowler Figures Section (Bowler name, score conceded with over, under bowler name current over ball by ball goings)
         var bowler = '<div class="bc-bowler">';
+        var bowlerFigures = '';
         if (c && c.bowler) {
-            bowler += '<div class="name">' + esc(c.bowler.short) + '</div>'
-                   +  '<div class="fig">' + esc(c.bowler.wickets) + '-' + esc(c.bowler.runs)
-                   +  '<span class="ov">(' + esc(c.bowler.overs) + ')</span></div>';
+            bowlerFigures = '<div class="bc-bowler-top">'
+                          +   '<span class="name">' + esc(c.bowler.short || c.bowler.name) + '</span>'
+                          +   '<span class="fig">' + esc(c.bowler.wickets) + '-' + esc(c.bowler.runs)
+                          +     '<span class="ov">(' + esc(c.bowler.overs) + ')</span>'
+                          +   '</span>'
+                          + '</div>';
         } else {
-            bowler += '<div class="name">Bowler</div><div class="fig">0-0<span class="ov">(0.0)</span></div>';
+            bowlerFigures = '<div class="bc-bowler-top">'
+                          +   '<span class="name">Bowler</span>'
+                          +   '<span class="fig">0-0<span class="ov">(0.0)</span></span>'
+                          + '</div>';
         }
-        bowler += '</div>';
+        var thisOverChips = (c && c.this_over && c.this_over.length)
+            ? '<div class="bc-bowler-balls balls">' + chips(c.this_over, 8) + '</div>'
+            : '<div class="bc-bowler-balls empty-over">' + (c && c.bowler ? 'Econ ' + c.bowler.economy.toFixed(2) : 'Over in progress') + '</div>';
 
-        // 5. Right Team (Bowling Team)
-        var right = '<div class="bc-team-badge">'
-                  +   '<div class="code">' + esc(oTeam.short) + '</div>'
-                  +   '<div class="name">' + esc(oTeam.name) + '</div>'
+        bowler += bowlerFigures + thisOverChips + '</div>';
+
+        // 5. Right Team (Bowling Team) - Team name only with larger font
+        var right = '<div class="bc-team-badge bc-team-right">'
+                  +   '<div class="code">' + esc(oTeam.short || oTeam.name) + '</div>'
                   + '</div>';
 
         return left + batters + scoreCapsule + bowler + right;
@@ -678,7 +719,7 @@ html, body {
 
     var RENDERERS = {
         broadcast: renderBroadcast,
-        lower:     renderLower,
+        lower:     renderBroadcast, // Also uses 5-section broadcast bar
         bug:       renderBug,
         scorecard: renderScorecard,
         ticker:    renderTicker,
