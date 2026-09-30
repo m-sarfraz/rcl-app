@@ -127,67 +127,59 @@ html, body {
 .fade { transition: opacity .16s ease; }
 .fade.out { opacity: .45; }
 
-/* ══ broadcast — the full bottom bar ═══════════════════════════ */
+/* ══ broadcast — the full bottom bar (White, Blue, Red Theme) ═══════════════════════════ */
 
 [data-layout="broadcast"] body { padding: 0; }
 [data-layout="broadcast"] .board {
     display: flex; align-items: stretch;
-    height: 170px; max-width: 1920px;
-    border-radius: 14px; overflow: hidden;
+    height: 135px; max-width: 1920px;
+    border-radius: 12px; overflow: hidden;
+    background: #FFFFFF;
     box-shadow: 0 14px 44px rgba(0,0,0,.42);
+    border: 1px solid #E2E8F0;
 }
-.bc-team {
-    width: 300px; flex: 0 0 auto;
-    display: flex; flex-direction: column; justify-content: center; gap: 6px;
-    padding: 16px 22px; color: #fff;
-    background: linear-gradient(135deg, var(--team-colour, var(--accent)), rgba(9,17,28,.96));
+.bc-team-badge {
+    width: 220px; flex: 0 0 auto;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
+    padding: 12px 18px; color: #FFFFFF;
+    background: #1D4ED8;
 }
-.bc-team.idle { background: var(--panel-2); }
-.bc-team .row  { display: flex; align-items: center; gap: 12px; }
-.bc-team .crest { width: 52px; height: 52px; font-size: 17px; background: rgba(255,255,255,.18); }
-.bc-team .code { font-size: 24px; font-weight: 900; letter-spacing: .6px; line-height: 1; }
-.bc-team .name { font-size: 12px; font-weight: 600; opacity: .8; margin-top: 3px;
-                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bc-team .score { font-size: 42px; font-weight: 900; letter-spacing: -1.6px; line-height: 1; }
-.bc-team .overs { font-size: 14px; font-weight: 700; opacity: .78; }
-.bc-team .yet   { font-size: 15px; font-weight: 700; opacity: .68; }
+.bc-team-badge .code { font-size: 36px; font-weight: 900; letter-spacing: .6px; line-height: 1; }
+.bc-team-badge .name { font-size: 13px; font-weight: 700; opacity: .88; text-transform: uppercase;
+                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
 
-.bc-mid {
-    flex: 1; min-width: 0;
-    display: flex; flex-direction: column; justify-content: center; gap: 9px;
-    padding: 14px 26px; background: var(--panel); color: var(--panel-text);
-}
-.bc-mid .top    { display: flex; align-items: center; gap: 14px; }
-.bc-mid .status { flex: 0 0 auto; }
-.bc-mid .head   { font-size: 20px; font-weight: 800; letter-spacing: -.3px;
-                  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bc-mid .sub    { font-size: 14px; font-weight: 700; color: #FCD34D; }
-
-.bc-players { display: flex; gap: 26px; flex-wrap: wrap; }
-.bc-player  { display: flex; align-items: baseline; gap: 8px; font-size: 14px; }
-.bc-player .who  { font-weight: 700; color: #fff; }
-.bc-player .fig  { font-weight: 800; color: #6EE7B7; }
-.bc-player .role { font-size: 10px; font-weight: 800; letter-spacing: 1px;
-                   color: var(--panel-mute); text-transform: uppercase; }
-.bc-player.striker .who::after { content: ' ●'; color: #6EE7B7; font-size: 10px; }
-
-.bc-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--panel-mute); }
-.bc-meta b { color: #fff; font-weight: 800; }
-
-.bc-right {
-    width: 250px; flex: 0 0 auto;
+.bc-batters {
+    flex: 1.25; min-width: 0;
     display: flex; flex-direction: column; justify-content: center; gap: 10px;
-    padding: 14px 20px; background: var(--panel-2); color: var(--panel-text);
-    border-left: 1px solid var(--panel-line);
+    padding: 12px 24px; background: #FFFFFF; color: #0F172A;
+    border-right: 1px solid #F1F5F9;
 }
-.bc-right .label { font-size: 10px; font-weight: 800; letter-spacing: 1.1px;
-                   color: var(--panel-mute); text-transform: uppercase; }
-.bc-overs { display: flex; gap: 6px; }
-.bc-over  { flex: 1; text-align: center; padding: 5px 0; border-radius: 7px;
-            background: rgba(255,255,255,.07); font-size: 12px; font-weight: 800; }
-.bc-over.wkt { background: rgba(239,68,68,.28); color: #FCA5A5; }
-.bc-over small { display: block; font-size: 8.5px; font-weight: 700;
-                 color: var(--panel-mute); margin-top: 1px; }
+.bc-batter { display: flex; align-items: center; justify-content: space-between; font-size: 19px; font-weight: 800; }
+.bc-batter .name { display: flex; align-items: center; gap: 6px; color: #0F172A; }
+.bc-batter.striker .name::before { content: '▶'; color: #DC2626; font-size: 14px; }
+.bc-batter .score { font-weight: 900; color: #0F172A; }
+.bc-batter .balls { font-size: 14px; font-weight: 700; color: #64748B; margin-left: 4px; }
+
+.bc-score-capsule {
+    flex: 1.45; min-width: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px;
+    padding: 12px 24px; background: #DC2626; color: #FFFFFF;
+}
+.bc-score-main { display: flex; align-items: baseline; gap: 10px; }
+.bc-score-team { font-size: 24px; font-weight: 900; color: rgba(255,255,255,.94); }
+.bc-score-val  { font-size: 46px; font-weight: 900; letter-spacing: -1.2px; line-height: 1; color: #FFFFFF; }
+.bc-score-ov   { font-size: 20px; font-weight: 800; color: #FEF08A; }
+.bc-score-sub  { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: .4px; }
+
+.bc-bowler {
+    flex: 1.15; min-width: 0;
+    display: flex; flex-direction: column; justify-content: center; gap: 8px;
+    padding: 12px 24px; background: #FFFFFF; color: #0F172A;
+    border-left: 1px solid #F1F5F9;
+}
+.bc-bowler .name { font-size: 18px; font-weight: 800; color: #0F172A; }
+.bc-bowler .fig  { font-size: 22px; font-weight: 900; color: #1D4ED8; }
+.bc-bowler .ov   { font-size: 14px; font-weight: 700; color: #64748B; margin-left: 4px; }
 
 /* ══ lower — compact third ═════════════════════════════════════ */
 
@@ -415,76 +407,69 @@ html, body {
     function renderBroadcast(d) {
         var c = d.current;
         var bat = battingSide(d);
+        var bTeam = d.teams[bat];
+        var bowlSide = (bat === 'home') ? 'away' : 'home';
+        var oTeam = d.teams[bowlSide];
 
-        var team = function (key) {
-            var t = d.teams[key];
-            var on = t.batting;
-            return '<div class="bc-team' + (on ? '' : ' idle') + '" style="--team-colour:' + esc(t.colour) + '">'
-                + '<div class="row">' + crest(t) + '<div style="min-width:0">'
-                +   '<div class="code">' + esc(t.short) + '</div>'
-                +   '<div class="name">' + esc(t.name) + '</div>'
-                + '</div></div>'
-                + '<div class="row">'
-                +   (t.score
-                        ? '<span class="score">' + esc(t.score) + '</span><span class="overs">(' + esc(t.overs) + ')</span>'
-                        : '<span class="yet">yet to bat</span>')
-                + '</div></div>';
-        };
+        // 1. Left Team (Batting Team)
+        var left = '<div class="bc-team-badge">'
+                 +   '<div class="code">' + esc(bTeam.short) + '</div>'
+                 +   '<div class="name">' + esc(bTeam.name) + '</div>'
+                 + '</div>';
 
-        var players = '';
+        // 2. Batters Section (2 batters with score and balls played)
+        var batters = '<div class="bc-batters">';
         if (c && c.striker) {
-            players += '<div class="bc-player striker"><span class="role">Bat</span>'
-                    +  '<span class="who">' + esc(c.striker.short) + '</span>'
-                    +  '<span class="fig">' + esc(c.striker.display) + '</span></div>';
+            batters += '<div class="bc-batter striker">'
+                    +    '<span class="name">' + esc(c.striker.short) + '</span>'
+                    +    '<span class="score">' + esc(c.striker.runs) + '<span class="balls">(' + esc(c.striker.balls) + ')</span></span>'
+                    +  '</div>';
+        } else {
+            batters += '<div class="bc-batter"><span class="name">Striker</span><span class="score">-</span></div>';
         }
         if (c && c.non_striker) {
-            players += '<div class="bc-player"><span class="role">Bat</span>'
-                    +  '<span class="who">' + esc(c.non_striker.short) + '</span>'
-                    +  '<span class="fig">' + esc(c.non_striker.display) + '</span></div>';
+            batters += '<div class="bc-batter">'
+                    +    '<span class="name" style="padding-left:14px">' + esc(c.non_striker.short) + '</span>'
+                    +    '<span class="score">' + esc(c.non_striker.runs) + '<span class="balls">(' + esc(c.non_striker.balls) + ')</span></span>'
+                    +  '</div>';
+        } else {
+            batters += '<div class="bc-batter"><span class="name" style="padding-left:14px">Non-Striker</span><span class="score">-</span></div>';
         }
+        batters += '</div>';
+
+        // 3. Center Red Capsule (Total Score & Overs with Batting Team name/code)
+        var scoreLine = (bTeam.score || '0-0').replace('/', '-');
+        var scoreCapsule = '<div class="bc-score-capsule">'
+                         +   '<div class="bc-score-main">'
+                         +     '<span class="bc-score-team">' + esc(bTeam.short) + '.</span>'
+                         +     '<span class="bc-score-val">' + esc(scoreLine) + '</span>'
+                         +     '<span class="bc-score-ov">' + esc(bTeam.overs || '0.0') + ' ov</span>'
+                         +   '</div>';
+        if (c && c.this_over && c.this_over.length) {
+            scoreCapsule += '<div class="balls" style="margin-top:2px">' + chips(c.this_over, 7) + '</div>';
+        } else {
+            scoreCapsule += '<div class="bc-score-sub">' + esc(d.status_line || (d.match.overs_per_side + ' OVERS MATCH')) + '</div>';
+        }
+        scoreCapsule += '</div>';
+
+        // 4. Bowler Figures Section
+        var bowler = '<div class="bc-bowler">';
         if (c && c.bowler) {
-            players += '<div class="bc-player"><span class="role">Bowl</span>'
-                    +  '<span class="who">' + esc(c.bowler.short) + '</span>'
-                    +  '<span class="fig">' + esc(c.bowler.line) + '</span></div>';
+            bowler += '<div class="name">' + esc(c.bowler.short) + '</div>'
+                   +  '<div class="fig">' + esc(c.bowler.wickets) + '-' + esc(c.bowler.runs)
+                   +  '<span class="ov">(' + esc(c.bowler.overs) + ')</span></div>';
+        } else {
+            bowler += '<div class="name">Bowler</div><div class="fig">0-0<span class="ov">(0.0)</span></div>';
         }
+        bowler += '</div>';
 
-        var meta = [];
-        var fact = function (label, value) { meta.push('<span>' + label + ' <b>' + value + '</b></span>'); };
-        if (c) {
-            fact('CRR', c.run_rate.toFixed(2));
-            if (c.required_rate != null && c.need > 0) fact('RRR', c.required_rate.toFixed(2));
-            if (c.partnership) fact('P\'ship', esc(c.partnership.display));
-            if (c.last_wicket) fact('Last wkt', esc(c.last_wicket.short + ' ' + c.last_wicket.runs));
-            if (c.projected)   fact('Proj', c.projected);
-            if (c.extras)      fact('Extras', c.extras);
-        }
+        // 5. Right Team (Bowling Team)
+        var right = '<div class="bc-team-badge">'
+                  +   '<div class="code">' + esc(oTeam.short) + '</div>'
+                  +   '<div class="name">' + esc(oTeam.name) + '</div>'
+                  + '</div>';
 
-        var right = '';
-        if (c) {
-            right = '<div><div class="label">This over</div><div class="balls" style="margin-top:7px">'
-                  + (chips(c.this_over, 8) || '<span style="font-size:12px;color:var(--panel-mute)">new over</span>')
-                  + '</div></div>';
-            if (c.recent_overs && c.recent_overs.length) {
-                right += '<div><div class="label">Recent overs</div><div class="bc-overs" style="margin-top:7px">'
-                       + c.recent_overs.map(function (o) {
-                             return '<div class="bc-over' + (o.wickets ? ' wkt' : '') + '">' + o.runs
-                                  + '<small>ov ' + o.over + '</small></div>';
-                         }).join('')
-                       + '</div></div>';
-            }
-        }
-
-        return team('home')
-            + '<div class="bc-mid">'
-            +   '<div class="top">' + statusPill(d)
-            +     '<span class="head">' + esc(d.headline) + '</span>'
-            +   '</div>'
-            +   (d.sub_headline ? '<div class="sub">' + esc(d.sub_headline) + '</div>' : '')
-            +   (players ? '<div class="bc-players">' + players + '</div>' : '')
-            +   (meta.length ? '<div class="bc-meta">' + meta.join('') + '</div>' : '')
-            + '</div>'
-            + team('away')
-            + (right ? '<div class="bc-right">' + right + '</div>' : '');
+        return left + batters + scoreCapsule + bowler + right;
     }
 
     /* ── lower third ───────────────────────────────────────── */

@@ -46,7 +46,7 @@ class EmbedController extends Controller
     public const SPECS = [
         'broadcast' => [
             'label'  => 'Broadcast bar',
-            'width'  => 1920, 'height' => 180,
+            'width'  => 1920, 'height' => 140,
             'blurb'  => 'The full bottom bar — both sides, batters, bowler, this over and recent overs. What a televised match puts on screen.',
             'best'   => 'Live streaming, full width',
             'stream' => true,

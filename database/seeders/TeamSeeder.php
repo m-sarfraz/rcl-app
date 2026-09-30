@@ -26,7 +26,7 @@ class TeamSeeder extends Seeder
             ['name' => 'Team 213',       'village_name' => 'Village 213',       'short_code' => '213',   'primary_color' => '#0c4a6e', 'secondary_color' => '#0ea5e9'],
             ['name' => '786 GM Cricket Club', 'village_name' => 'Village 786GM', 'short_code' => '786GM', 'primary_color' => '#4c1d95', 'secondary_color' => '#8b5cf6'],
             ['name' => 'Sholah Cricket Club', 'village_name' => 'Village 183',  'short_code' => '183',   'primary_color' => '#78350f', 'secondary_color' => '#f59e0b'],
-            ['name' => 'Team 214G',      'village_name' => 'Village 214G',      'short_code' => '214G',  'primary_color' => '#0f766e', 'secondary_color' => '#2dd4bf'],
+            ['name' => 'Uqaab Eleven',   'village_name' => '214 Gujjar Abadi',  'short_code' => '214G',  'primary_color' => '#1e3a8a', 'secondary_color' => '#d4af37'],
             ['name' => 'Shaheen Cricket Club', 'village_name' => 'Village 449', 'short_code' => '449', 'primary_color' => '#b91c1c', 'secondary_color' => '#f97316'],
             ['name' => 'Ghazi Cricket Club', 'village_name' => 'Village 305',  'short_code' => '305',   'primary_color' => '#0f172a', 'secondary_color' => '#334155'],
         ];
