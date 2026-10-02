@@ -28,6 +28,7 @@ use App\Support\ApiResponse;
 use App\Support\Overs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 /**
  * The scoring surface. Everything here except `verify` sits behind the
@@ -174,6 +175,68 @@ class ScoringController extends Controller
             'saved'    => $count,
             'named_xi' => $this->namedXI($match->fresh()),
         ], 'Playing XI saved.');
+    }
+
+    /**
+     * Add a player to the team and match squad on the fly during scoring runtime.
+     */
+    public function addQuickPlayer(Request $request, CricketMatch $match): JsonResponse
+    {
+        $this->guardScoreable($match);
+
+        $validated = $request->validate([
+            'team_id'       => ['required', 'integer', Rule::in([$match->home_team_id, $match->away_team_id])],
+            'name'          => ['required', 'string', 'min:2', 'max:100'],
+            'role'          => ['nullable', 'string', 'in:batsman,bowler,all_rounder,wicket_keeper'],
+            'jersey_number' => ['nullable', 'integer', 'min:0', 'max:999'],
+        ]);
+
+        $teamId = (int) $validated['team_id'];
+        $name   = trim($validated['name']);
+        $role   = $validated['role'] ?? 'all_rounder';
+        $jersey = $validated['jersey_number'] ?? null;
+
+        $player = Player::create([
+            'name'          => $name,
+            'role'          => $role,
+            'jersey_number' => $jersey,
+            'is_active'     => true,
+        ]);
+
+        if ($match->edition_id) {
+            PlayerEditionTeam::firstOrCreate([
+                'player_id'  => $player->id,
+                'team_id'    => $teamId,
+                'edition_id' => $match->edition_id,
+            ]);
+        }
+
+        $currentSquadCount = MatchSquad::where('match_id', $match->id)->where('team_id', $teamId)->count();
+        MatchSquad::create([
+            'match_id'         => $match->id,
+            'team_id'          => $teamId,
+            'player_id'        => $player->id,
+            'batting_order'    => $currentSquadCount + 1,
+            'is_captain'       => false,
+            'is_wicket_keeper' => $role === 'wicket_keeper',
+        ]);
+
+        return ApiResponse::created([
+            'player' => array_merge((new PlayerResource($player))->resolve($request), [
+                'is_eligible'          => true,
+                'ineligibility_reason' => null,
+                'roster_jersey'        => $jersey,
+            ]),
+            'squad_member' => [
+                'player_id'        => $player->id,
+                'name'             => $player->name,
+                'role'             => $player->role,
+                'batting_order'    => $currentSquadCount + 1,
+                'is_captain'       => false,
+                'is_wicket_keeper' => $role === 'wicket_keeper',
+            ],
+            'named_xi' => $this->namedXI($match->fresh()),
+        ], "Player {$player->name} added to squad.");
     }
 
     public function startInnings(StartInningsRequest $request, CricketMatch $match): JsonResponse

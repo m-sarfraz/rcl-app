@@ -103,6 +103,7 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
             Route::get('matches/{match}/state',            [ScoringController::class, 'state']);
             Route::post('matches/{match}/toss',            [ScoringController::class, 'toss']);
             Route::post('matches/{match}/squad',           [ScoringController::class, 'saveSquad']);
+            Route::post('matches/{match}/quick-player',    [ScoringController::class, 'addQuickPlayer']);
             Route::post('matches/{match}/innings',         [ScoringController::class, 'startInnings']);
             Route::get('matches/{match}/finalize-preview', [ScoringController::class, 'finalizePreview']);
             Route::post('matches/{match}/finalize',        [ScoringController::class, 'finalize']);
