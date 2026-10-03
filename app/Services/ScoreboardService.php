@@ -33,7 +33,8 @@ class ScoreboardService
         ]);
 
         $innings = $match->innings->sortBy('innings_number')->values();
-        $current = $innings->firstWhere('is_completed', false) ?? $innings->last();
+        $current = $innings->where('is_completed', false)->sortByDesc('innings_number')->first()
+            ?? $innings->sortByDesc('innings_number')->first();
 
         return [
             'match' => [

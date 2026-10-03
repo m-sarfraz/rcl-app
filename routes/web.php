@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EditionController;
 use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\MatchController;
+use App\Http\Controllers\Admin\MatchManageController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PlayerController;
 use App\Http\Controllers\Admin\PollController;
@@ -135,6 +136,15 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     // Matches
     Route::resource('matches', MatchController::class);
     Route::patch('matches/{match}/result', [MatchController::class, 'result'])->name('matches.result');
+    Route::get('matches/{match}/manage', [MatchManageController::class, 'index'])->name('matches.manage');
+    Route::put('matches/{match}/manage/match', [MatchManageController::class, 'updateMatch'])->name('matches.manage.match');
+    Route::post('matches/{match}/manage/rebuild', [MatchManageController::class, 'rebuildMatch'])->name('matches.manage.rebuild');
+    Route::post('matches/{match}/manage/innings', [MatchManageController::class, 'storeInnings'])->name('matches.manage.innings.store');
+    Route::put('matches/{match}/manage/innings/{innings}', [MatchManageController::class, 'updateInnings'])->name('matches.manage.innings.update');
+    Route::post('matches/{match}/manage/innings/{innings}/rebuild', [MatchManageController::class, 'rebuildInnings'])->name('matches.manage.innings.rebuild');
+    Route::post('matches/{match}/manage/innings/{innings}/balls', [MatchManageController::class, 'storeBall'])->name('matches.manage.balls.store');
+    Route::put('matches/{match}/manage/innings/{innings}/balls/{ball}', [MatchManageController::class, 'updateBall'])->name('matches.manage.balls.update');
+    Route::delete('matches/{match}/manage/innings/{innings}/balls/{ball}', [MatchManageController::class, 'destroyBall'])->name('matches.manage.balls.destroy');
 
     // Scorecard
     Route::get('scorecard/{match}', [ScorecardController::class, 'show'])->name('scorecard.show');

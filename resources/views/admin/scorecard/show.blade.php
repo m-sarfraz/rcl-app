@@ -2,6 +2,7 @@
 @section('title','Scorecard')
 @section('page-title','Match Scorecard')
 @section('topbar-actions')
+<a href="{{ route('admin.matches.manage', $match) }}" class="topbar-btn"><i class="bi bi-sliders"></i> Edit Deliveries & Match</a>
 <a href="{{ route('scorecard.print', $match) }}" target="_blank" class="topbar-btn"><i class="bi bi-printer"></i> Print / Download</a>
 @endsection
 @section('content')

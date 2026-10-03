@@ -42,6 +42,7 @@
                         </span>
                         @endif
                         <a href="{{ route('admin.matches.show',$m) }}" class="btn-rcl-secondary btn" style="font-size:.72rem;padding:.25rem .6rem;">View</a>
+                        <a href="{{ route('admin.matches.manage',$m) }}" class="btn-rcl-primary btn" style="font-size:.72rem;padding:.25rem .6rem;" title="Manage innings and ball-by-ball deliveries"><i class="bi bi-sliders"></i> Manage</a>
                         <a href="{{ route('admin.matches.edit',$m) }}" class="btn-rcl-secondary btn" style="font-size:.72rem;padding:.25rem .6rem;">Edit</a>
                         @if($m->status==='completed')
                         <a href="{{ route('admin.scorecard.show',$m) }}" class="btn-rcl-secondary btn" style="font-size:.72rem;padding:.25rem .6rem;">Card</a>

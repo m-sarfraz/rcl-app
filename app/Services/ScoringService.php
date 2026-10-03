@@ -90,6 +90,13 @@ class ScoringService
             return $existing->fresh();
         }
 
+        if ($inningsNumber > 1) {
+            Innings::where('match_id', $matchId)
+                ->where('innings_number', '<', $inningsNumber)
+                ->where('is_completed', false)
+                ->update(['is_completed' => true]);
+        }
+
         CricketMatch::where('id', $matchId)
             ->where('status', 'upcoming')
             ->update(['status' => 'live']);

@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 @section('title','Edit Match')
 @section('page-title','Edit Match #'.$match->match_number)
+@section('topbar-actions')
+<a href="{{ route('admin.matches.manage', $match) }}" class="topbar-btn"><i class="bi bi-sliders"></i> Advanced Match Console</a>
+<a href="{{ route('admin.scorecard.show', $match) }}" class="topbar-btn"><i class="bi bi-card-text"></i> Scorecard</a>
+@endsection
 @section('content')
 <div class="rcl-card" style="max-width:700px;">
     <div class="rcl-card-body">
