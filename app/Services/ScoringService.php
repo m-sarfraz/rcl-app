@@ -267,20 +267,27 @@ class ScoringService
 
         $last = $this->scoring->getLastBall($innings->id);
 
-        $over = $last ? (int) $last->over_number : 1;
-        $ball = $last ? (int) $last->ball_number : 0;
-
-        if (! $isExtraDelivery) {
-            $ball++;
-            if ($ball > 6) {
-                $over++;
-                $ball = 1;
-            }
-        } elseif (! $last) {
-            $ball = 1;
+        if (! $last) {
+            return [1, 1];
         }
 
-        return [$over, max(1, $ball)];
+        $over = (int) $last->over_number;
+        $legalInOver = BallByBallLog::where('innings_id', $innings->id)
+            ->where('over_number', $over)
+            ->where('is_wide', false)
+            ->where('is_no_ball', false)
+            ->where('is_penalty', false)
+            ->count();
+
+        if ($legalInOver >= 6) {
+            return [$over + 1, 1];
+        }
+
+        if ($isExtraDelivery) {
+            return [$over, max(1, (int) $last->ball_number)];
+        }
+
+        return [$over, $legalInOver + 1];
     }
 
     /**
