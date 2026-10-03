@@ -109,7 +109,7 @@ class MatchManageController extends Controller
         ]);
 
         $match->update($data);
-        Cache::forget("live_match_{$match->id}");
+        $this->stats->rebuildMatch($match);
 
         return back()->with('success', 'Match settings and status updated successfully.');
     }
@@ -231,19 +231,8 @@ class MatchManageController extends Controller
                 'batting_team_wickets_after' => 0,
             ]);
 
-            $this->stats->rebuildInnings($innings);
-
-            // If Inning 1 changed, auto-update Inning 2 target if needed
-            if ($innings->innings_number === 1) {
-                $inn2 = Innings::where('match_id', $match->id)->where('innings_number', 2)->first();
-                if ($inn2) {
-                    $inn2->update(['target' => $innings->fresh()->total_runs + 1]);
-                    $this->stats->rebuildInnings($inn2);
-                }
-            }
+            $this->stats->rebuildMatch($match);
         });
-
-        Cache::forget("live_match_{$match->id}");
 
         return redirect()->route('admin.matches.manage', [
             'match'      => $match->id,
@@ -310,18 +299,8 @@ class MatchManageController extends Controller
                 'commentary'     => $data['commentary'] ?? null,
             ]);
 
-            $this->stats->rebuildInnings($innings);
-
-            if ($innings->innings_number === 1) {
-                $inn2 = Innings::where('match_id', $match->id)->where('innings_number', 2)->first();
-                if ($inn2) {
-                    $inn2->update(['target' => $innings->fresh()->total_runs + 1]);
-                    $this->stats->rebuildInnings($inn2);
-                }
-            }
+            $this->stats->rebuildMatch($match);
         });
-
-        Cache::forget("live_match_{$match->id}");
 
         return redirect()->route('admin.matches.manage', [
             'match'      => $match->id,
@@ -339,18 +318,8 @@ class MatchManageController extends Controller
 
         DB::transaction(function () use ($match, $innings, $ball) {
             $ball->delete();
-            $this->stats->rebuildInnings($innings);
-
-            if ($innings->innings_number === 1) {
-                $inn2 = Innings::where('match_id', $match->id)->where('innings_number', 2)->first();
-                if ($inn2) {
-                    $inn2->update(['target' => $innings->fresh()->total_runs + 1]);
-                    $this->stats->rebuildInnings($inn2);
-                }
-            }
+            $this->stats->rebuildMatch($match);
         });
-
-        Cache::forget("live_match_{$match->id}");
 
         return redirect()->route('admin.matches.manage', [
             'match'      => $match->id,
@@ -364,38 +333,16 @@ class MatchManageController extends Controller
      */
     public function rebuildInnings(CricketMatch $match, Innings $innings)
     {
-        $this->stats->rebuildInnings($innings);
-
-        if ($innings->innings_number === 1) {
-            $inn2 = Innings::where('match_id', $match->id)->where('innings_number', 2)->first();
-            if ($inn2) {
-                $inn2->update(['target' => $innings->fresh()->total_runs + 1]);
-                $this->stats->rebuildInnings($inn2);
-            }
-        }
-
-        Cache::forget("live_match_{$match->id}");
+        $this->stats->rebuildMatch($match);
 
         return back()->with('success', "Innings {$innings->innings_number} statistics rebuilt and synchronized.");
     }
 
     public function rebuildMatch(CricketMatch $match)
     {
-        foreach ($match->innings as $inn) {
-            $this->stats->rebuildInnings($inn);
-        }
+        $this->stats->rebuildMatch($match);
 
-        $inn1 = $match->innings()->where('innings_number', 1)->first();
-        $inn2 = $match->innings()->where('innings_number', 2)->first();
-
-        if ($inn1 && $inn2) {
-            $inn2->update(['target' => $inn1->total_runs + 1]);
-            $this->stats->rebuildInnings($inn2);
-        }
-
-        Cache::forget("live_match_{$match->id}");
-
-        return back()->with('success', 'Entire match statistics, scorecards, and targets synchronized.');
+        return back()->with('success', 'Entire match statistics, player stats, leaderboards, scorecards, and targets synchronized.');
     }
 
     /**

@@ -351,19 +351,66 @@ class MatchStatisticsService
      |  Match
      ══════════════════════════════════════════════════════════════════ */
 
-    public function rebuildMatch(CricketMatch $match): CricketMatch
+    public function rebuildMatch(CricketMatch $match, bool $syncEditionStats = true): CricketMatch
     {
-        $match->load('innings');
+        $match->load([
+            'innings' => fn ($q) => $q->orderBy('innings_number'),
+            'homeTeam',
+            'awayTeam',
+        ]);
 
         foreach ($match->innings as $innings) {
             $this->rebuildInnings($innings);
         }
 
+        // Auto-sync target between Inning 1 and Inning 2
+        $inn1 = $match->innings->firstWhere('innings_number', 1);
+        $inn2 = $match->innings->firstWhere('innings_number', 2);
+        if ($inn1 && $inn2) {
+            $expectedTarget = (int) $inn1->total_runs + 1;
+            if ((int) $inn2->target !== $expectedTarget) {
+                $inn2->forceFill(['target' => $expectedTarget])->save();
+                $this->rebuildInnings($inn2);
+            }
+        }
+
         $this->writeFieldingScorecards($match);
+
+        if ($match->status === 'completed') {
+            $result = $this->resolveResult($match);
+
+            $updateData = [
+                'winner_id'     => $result['winner_id'],
+                'result_type'   => $result['result_type'],
+                'result_margin' => $result['result_margin'],
+            ];
+
+            // Refresh result description if empty or following default won by / tied patterns
+            if (empty($match->result_description) || str_contains($match->result_description, 'won by') || str_contains($match->result_description, 'tied') || str_contains($match->result_description, 'Match tied')) {
+                $updateData['result_description'] = $result['result_description'];
+            }
+
+            $match->forceFill($updateData)->save();
+
+            if (! $match->man_of_match_player_id) {
+                $motm = $this->pickManOfTheMatch($match);
+                if ($motm) {
+                    $match->forceFill(['man_of_match_player_id' => (string) $motm])->save();
+                }
+            }
+
+            if ($syncEditionStats && $match->edition_id) {
+                $this->syncEditionStatsForMatch($match);
+            }
+        }
+
+        if ($match->edition_id) {
+            $this->flushEditionCaches((int) $match->edition_id);
+        }
 
         Cache::forget("live_match_{$match->id}");
 
-        return $match->fresh(['innings']);
+        return $match->fresh(['innings', 'homeTeam', 'awayTeam', 'winner', 'manOfMatch']);
     }
 
     private function writeFieldingScorecards(CricketMatch $match): void
